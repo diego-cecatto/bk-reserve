@@ -6,6 +6,7 @@ var Reserve = require('Reserve');
 // var Int32 = require('mongoose-int32');
 // var ObjectId = mongoose.Schema.Types.ObjectId;
 var Schema = mongoose.Schema;
+var Decimal = Schema.Types.Decimal;
 var productResereveSchema = new Schema({
    description: {
       type: String
@@ -15,6 +16,9 @@ var productResereveSchema = new Schema({
    },
    product: {
       type: Product
+   },
+   value: {
+      type: Decimal
    }
    // ,
    // Reserve: {
