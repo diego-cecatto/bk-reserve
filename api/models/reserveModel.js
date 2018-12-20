@@ -2,12 +2,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 //var ObjectId = mongoose.Schema.Types.ObjectId;
-var People = require('People');
+var Client = require('Client');
 var Status = require('Status');
 var ProductReserve = require('ProductReserve');
 var reserveSchema = new Schema({
-   people: {
-      type: People
+   client: {
+      type: Client
    },
    status: {
       type: Status
@@ -23,6 +23,9 @@ var reserveSchema = new Schema({
    },
    productsReserves: {
       type : [ProductReserve]
+   },
+   row: {
+      type : Number
    }
 });
 module.exports = mongoose.model('Reserve', reserveSchema);

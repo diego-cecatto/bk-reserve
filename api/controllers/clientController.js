@@ -1,43 +1,43 @@
 'use strict';
 var mongoose = require('mongoose'),
-    People = mongoose.model('Contact');
+    Client = mongoose.model('Contact');
 exports.listAll = function(req, res) {
-   People.find({}, function(err, plp) {
+   Client.find({}, function(err, cli) {
       if (err) {
          res.send(err);
       }
-      res.json(plp);
+      res.json(cli);
    });
 };
 exports.create = function(req, res) {
-   var people = new People(req.body);
-   people.save(function(err, plp) {
+   var client = new Client(req.body);
+   client.save(function(err, cli) {
       if (err) {
          res.send(err);
       }
-      res.json(plp);
+      res.json(cli);
    });
 };
 exports.read = function(req, res) {
-   People.findById(req.params.id, function(err, plp) {
+   Client.findById(req.params.id, function(err, cli) {
       if (err) {
          res.send(err);
       }
-      res.json(plp);
+      res.json(cli);
    });
 };
 exports.update = function(req, res) {
-   People.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function(err, plp) {
+   Client.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function(err, cli) {
       if (err) {
          res.send(err);
       }
-      res.json(plp);
+      res.json(cli);
    });
 };
 exports.delete = function(req, res) {
-   People.remove({
+   Client.remove({
       _id: req.params.id
-   }, function(err, plp) {
+   }, function(err, cli) {
       if (err) {
          res.send(err);
       }

@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Decimal =  Schema.Types.Decimal128;
 var productSchema = new Schema({
-   nome: {
+   name: {
       type: String
    },
    value: {
