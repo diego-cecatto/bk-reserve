@@ -2,12 +2,12 @@ var express = require('express'),
     app = express(),
     port = process.env.PORT || 3000,
     mongoose = require('mongoose'),
-    Contact = require('./api/models/contactModel'),
-    People = require('./api/models/peopleModel'),
-    Product = require('./api/models/productModel'),
-    ProductReserve = require('./api/models/productRerveModel'),
-    Reserve = require('./api/models/reserveModel'),
     Status = require('./api/models/statusModel'),
+    Contact = require('./api/models/contactModel'),
+    People = require('./api/models/clientModel'),
+    Product = require('./api/models/productModel'),
+    ProductReserve = require('./api/models/productReserveModel'),
+    Reserve = require('./api/models/reserveModel'),
     bodyParser = require('body-parser');
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/bk-reservedb');
@@ -19,7 +19,7 @@ var routes = require('./api/routes/contactRoutes');
 routes(app);
 var routes = require('./api/routes/productRoutes');
 routes(app);
-var routes = require('./api/routes/peopleRoutes');
+var routes = require('./api/routes/clientRoutes');
 routes(app);
 app.listen(port);
 console.log('RESTful API server started on: ' + port);

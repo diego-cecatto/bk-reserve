@@ -1,16 +1,20 @@
 'use strict';
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-//var ObjectId = mongoose.Schema.Types.ObjectId;
-var Client = require('Client');
-var Status = require('Status');
-var ProductReserve = require('ProductReserve');
+var ObjectId = mongoose.Schema.Types.ObjectId;
+var Client = mongoose.model('Client');
+var Status = mongoose.model('Status');
+var ProductReserve = mongoose.model('ProductReserve');
 var reserveSchema = new Schema({
    client: {
-      type: Client
+      type: ObjectId 
+      , 
+      ref:Client 
    },
    status: {
-      type: Status
+      type: ObjectId
+      ,
+      ref: Status
    },
    details: {
       type: String
@@ -21,9 +25,11 @@ var reserveSchema = new Schema({
    deliveredDate: {
       type: Date
    },
-   productsReserves: {
-      type : [ProductReserve]
-   },
+   productsReserves: [{
+      type : ObjectId 
+      ,
+      ref : ProductReserve
+   }],
    row: {
       type : Number
    }

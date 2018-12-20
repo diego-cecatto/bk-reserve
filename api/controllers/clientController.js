@@ -1,6 +1,6 @@
 'use strict';
 var mongoose = require('mongoose'),
-    Client = mongoose.model('Contact');
+    Client = mongoose.model('Client');
 exports.listAll = function(req, res) {
    Client.find({}, function(err, cli) {
       if (err) {

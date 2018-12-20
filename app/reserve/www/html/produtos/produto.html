@@ -29,19 +29,19 @@
             <p class="event listening">Connecting to Device</p>
             <p class="event received">
                 <form>
-                    <input type="hidden" name="id" />
+                    <input type="hidden" name="id"/>
                     <div class="form-group">
                         <label for="name">Nome</label>
-                        <input type="text" class="form-control" name="name" placeholder="Nome Cliente">
+                        <input type="text" class="form-control" required='required' name="name" placeholder="Nome Cliente">
                     </div>
                     <div class="form-group">
                         <label for="value">Valor</label>
-                        <input type="text" class="form-control" name="name" placeholder="Valor">
+                        <input type="text" class="form-control" required='required' name="name" placeholder="Valor">
                         *usar máscara
                     </div>
                     <div class="form-group">
                         <label for="stock">Estoque</label>
-                        <input type="text" class="form-control" name="stock" placeholder="Estoque">
+                        <input type="text" class="form-control" required='required' name="stock" placeholder="Estoque">
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -52,6 +52,8 @@
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript">
         app.initialize();
+        //validação
+        
     </script>
 </body>
 

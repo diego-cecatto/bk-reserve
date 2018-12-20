@@ -1,10 +1,8 @@
 'use strict';
 var mongoose = require('mongoose');
-var Product = require('Product');
-var Reserve = require('Reserve');
-
+var Product = mongoose.model('Product');
 // var Int32 = require('mongoose-int32');
-// var ObjectId = mongoose.Schema.Types.ObjectId;
+var ObjectId = mongoose.Schema.Types.ObjectId;
 var Schema = mongoose.Schema;
 var Decimal = Schema.Types.Decimal;
 var productResereveSchema = new Schema({
@@ -19,6 +17,11 @@ var productResereveSchema = new Schema({
    },
    value: {
       type: Decimal
+   },
+   product : {
+      type :ObjectId
+       , 
+       ref :Product
    }
    // ,
    // Reserve: {
