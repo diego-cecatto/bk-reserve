@@ -1,0 +1,10 @@
+{
+  "cordova-plugin-curl": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-curl"
+    },
+    "is_top_level": true,
+    "variables": {}
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "_from": "cordova-plugin-curl",
+  "_id": "cordova-plugin-curl@1.0.1",
+  "_inBundle": false,
+  "_integrity": "sha1-DTA/1GycYhSFAGMa6vtR6/ZltZg=",
+  "_location": "/cordova-plugin-curl",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-curl",
+    "name": "cordova-plugin-curl",
+    "escapedName": "cordova-plugin-curl",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-curl/-/cordova-plugin-curl-1.0.1.tgz",
+  "_shasum": "0d303fd46c9c62148500631aeafb51ebf665b598",
+  "_spec": "cordova-plugin-curl",
+  "_where": "/var/www/html/sand-box/bk-rsrv/app/reserve",
+  "author": {
+    "name": "Merrick Zhang"
+  },
+  "bugs": {
+    "url": "https://github.com/blackberry/WebWorks-Community-APIs/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-curl",
+    "platforms": [
+      "blackberry10"
+    ]
+  },
+  "deprecated": false,
+  "description": "BlackBerry 10 Community Contributed API to make network calls with CURL",
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0"
+    }
+  ],
+  "homepage": "https://github.com/blackberry/WebWorks-Community-APIs/tree/master/BB10-Cordova/Curl#readme",
+  "keywords": [
+    "blackberry",
+    "curl",
+    "network",
+    "cordova",
+    "ecosystem:cordova",
+    "cordova-blackberry10"
+  ],
+  "license": "Apache 2.0",
+  "name": "cordova-plugin-curl",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blackberry/WebWorks-Community-APIs.git"
+  },
+  "version": "1.0.1"
+}
