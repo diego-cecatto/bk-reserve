@@ -10,7 +10,8 @@ var express = require('express'),
     Reserve = require('./api/models/reserveModel'),
     bodyParser = require('body-parser');
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/bk-reservedb');
+//mongoose.connect('mongodb://localhost/bk-reservedb');
+mongoose.connect('mongodb+srv://torreto:Forever1@bkresrve-caxsg.mongodb.net/test?retryWrites=true')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var routes = require('./api/routes/reserveRoutes');
