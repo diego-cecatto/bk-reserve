@@ -12,9 +12,6 @@ var productResereveSchema = new Schema({
    quantity: {
       type: Number
    },
-   product: {
-      type: Product
-   },
    value: {
       type: Decimal
    },

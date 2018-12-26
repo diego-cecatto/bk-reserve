@@ -13,17 +13,32 @@
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="spec/lib/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
-    <script src="barcodescanner.js"></script>
+    <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.1.1/stitch.js"></script>
+    <script>
+        const client = stitch.Stitch.initializeDefaultAppClient('reserve-rsfqy');
+        const db = client.getServiceClient(stitch.RemoteMongoClient.factory, 'mongodb-atlas')
+                         .db("reserve");
+        client.auth.loginWithCredential(new stitch.AnonymousCredential())
+        .then(() =>
+            db.collection("status").insertOne({"dfsdfsd":"sdfsdfd"})
+            .then(docs => {
+                console.log("Found docs", docs)
+                console.log("[MongoDB Stitch] Connected to Stitch")
+            }).catch(err => {
+                console.error(err)
+            })
+        );
+      </script>
     <script type="text/javascript">
-        app.initialize();
-        $.get("http://www.taringa.net/top/posts/?fecha=3&cat=-1", function(data) {
-            console.log(data);
-        });
-var str="http://google.com";
-        var result = community.curl.get(str);
-        //https://www.npmjs.com/package/cordova-plugin-curl
-        //https://github.com/MoemenMostafa/cordova-curl
-        console.log(result);
+//         app.initialize();
+//         $.get("http://www.taringa.net/top/posts/?fecha=3&cat=-1", function(data) {
+//             console.log(data);
+//         });
+// var str="http://google.com";
+//         var result = community.curl.get(str);
+//         //https://www.npmjs.com/package/cordova-plugin-curl
+//         //https://github.com/MoemenMostafa/cordova-curl
+//         console.log(result);
         // $.ajax({
         //         type: "POST",
         //         url: "http://www.url.php",
