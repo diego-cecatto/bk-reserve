@@ -1,3 +1,178 @@
+https://docs.mongodb.com/stitch/getting-started/integrate-authentication-providers/
+
+<script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.1.1/stitch.js"></script>
+https://docs.mongodb.com/stitch/getting-started/integrate-authentication-providers/
+
+<script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.1.1/stitch.js"></script>
+<script>
+    const {
+            Stitch,
+            RemoteMongoClient,
+            UserPasswordCredential
+        } = stitch;
+    var db = null;
+    class DBConect{
+        constructor() {
+            this.ready = false;
+            this.queue = [];
+            this.db = null;
+            this.config = {
+                APIKEY :'',
+                email: '',
+                password: ''
+            }
+            const dbConector = this;
+            this.client = Stitch.initializeDefaultAppClient('reserve-rsfqy');
+            this.login().then(() => {
+                // Initialize a MongoDB Service Client
+                dbConector.db = this.client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas")
+                                            .db("reserve");
+                dbConector.ready = true;
+                console.log('ready');
+                this.processQueue();
+            });
+        }
+        login() {
+            //const credential = new UserPasswordCredential(this.config.email, this.config.password);
+            //return client.auth.loginWithCredential(credential);
+            return this.client.auth.loginWithCredential(new stitch.AnonymousCredential())
+        }
+        addQueue(action, collection, params, callback) {
+            this.queue.push( { 'collection': collection, 'action': action, 'params': params, 'callback': callback} );
+        }
+        processQueue() {
+            for(var idcQueue = 0 ; idcQueue < this.queue.length ; idcQueue++) {
+                var pendence = this.queue[idcQueue];
+                this.execQueue(pendence.action, pendence.collection, pendence.params, pendence.callback);
+            }
+        }
+        //execute method can be appropriated
+        exec(action, collection, params, callback) {
+            if(this.ready) {
+                this.execQueue(action, collection, params, callback);
+                return;
+            }
+            this.addQueue(action, collection, params, callback);
+        }
+        execQueue(action, collection, params, callback) {
+            var collection = this.db.collection(collection);
+            // eval('collection.'+action+'() \
+            //                 .toArray() \
+            //                 .then((ret) => { \
+            //      console.log(ret); \
+            //  })'); 
+            var prommisse = collection[action].call(collection, params);
+            if(callback == undefined || callback == null) {
+                return;
+            }
+            if(action === 'find') {
+                prommisse = prommisse.toArray();
+            }
+            prommisse.then((ret) => { 
+                callback(ret);
+            }); 
+        }
+        // insertOne(data, model) {
+        //     if(this.ready) {
+        //         this.db.collection(model.collection).insertOne(data);
+        //         return;
+        //     }
+        //     this.addQueue(model.collection, insertOne, data);
+        // }
+    }
+    
+    class genericModel {
+        constructor(){
+            if(typeof db === 'undefined' || db == null) {
+                db = new DBConect();
+            }
+        }
+        insertOne(data, callback) {
+            console.log('inserting one');
+            this.exec('insertOne',data,callback);
+        }
+        insertMany(data, callback) {
+            console.log('inserting one');
+            this.exec('insertMany',data,callback);
+        }
+        deleteOne(){
+            this.exec('deleteOne',params,callback);
+        }
+        deleteMany(){
+            this.exec('deleteMany',params,callback);
+        }
+        updateOne(params, callback){
+            //use $set to sinalize update columns ??
+            this.exec('updateOne',params,callback);
+        }
+        updateMany(params, callback){
+            //use $set to sinalize update columns ??
+            this.exec('updateMany',params,callback);
+        }
+        find(params, callback){
+            console.log('finding');
+            this.exec('find',params,callback);
+        }
+        findOne(params, callback){
+            console.log('finding one');
+            this.exec('findOne',params,callback);
+        }
+        exec(fn, params, callback){
+            db.exec(fn, this.collection, params, callback);
+        }
+    }
+    class Status extends genericModel{
+        constructor(){
+            super();
+            this.collection = 'status';
+        }
+    }
+    class Clients extends genericModel{
+        constructor(){
+            super();
+            this.collection = 'clients';
+        }
+    }
+    var mStatus = new Status();
+    //mStatus.insertOne({name : 'Cancelado'})
+    mStatus.find(null, function(ret){console.log(ret)});
+    //create a connection class
+    //develop plugin with connect test
+    //create a pattern especific models
+    //define models insert sepparally and same document
+    //how to get a object id
+    // const client = Stitch.initializeDefaultAppClient('reserve-rsfqy');
+    // // // Renders the the employees' information in the table
+    // // function displayEmployees(employees) {
+    // //     const employeesTableBody = document.getElementById("employees");
+    // //     const numResultsEl = document.getElementById("num-results");
+    // //     const tableRows = employees.map(employee => {
+    // //         return `
+    // //         <tr>
+    // //             <td>${employee.name.last}, ${employee.name.first}</td>
+    // //             <td>${employee.email}</td>
+    // //             <td>${employee.role}</td>
+    // //             <td>${employee.manager.name.first} ${employee.manager.name.last} (${employee.manager.id || "no manager"})</td>
+    // //             <td>${employee.salary}</td>
+    // //         </tr>
+    // //         `;
+    // //     });
+    // //     employeesTableBody.innerHTML = tableRows.join("");
+    // //     numResultsEl.innerHTML = employees.length;
+    // // }
+    // const db = client.getServiceClient(stitch.RemoteMongoClient.factory, 'mongodb-atlas')
+    //                  .db("reserve");
+    // client.auth.loginWithCredential(new stitch.AnonymousCredential())
+    // .then(() =>
+    //     db.collection("clients").insertOne({"name":"teste", teste:[{"$ref":'contacts','phoneNumber':'782378378243782378243'}]})
+    //     .then(docs => {
+    //         console.log("Found docs", docs)
+    //         console.log("[MongoDB Stitch] Connected to Stitch")
+    //     }).catch(err => {
+    //         console.error(err)
+    //     })
+    // );
+  </script>
 <!DOCTYPE html>
 <html>
 
@@ -15,19 +190,68 @@
     <script type="text/javascript" src="js/index.js"></script>
     <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.1.1/stitch.js"></script>
     <script>
-        const client = stitch.Stitch.initializeDefaultAppClient('reserve-rsfqy');
-        const db = client.getServiceClient(stitch.RemoteMongoClient.factory, 'mongodb-atlas')
-                         .db("reserve");
-        client.auth.loginWithCredential(new stitch.AnonymousCredential())
-        .then(() =>
-            db.collection("status").insertOne({"dfsdfsd":"sdfsdfd"})
-            .then(docs => {
-                console.log("Found docs", docs)
-                console.log("[MongoDB Stitch] Connected to Stitch")
-            }).catch(err => {
-                console.error(err)
-            })
+        <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.1.1/stitch.js"></script>
+<script>
+    const {
+        Stitch,
+        RemoteMongoClient,
+        UserPasswordCredential
+    } = stitch;
+
+    const client = Stitch.initializeDefaultAppClient('reserve-rsfqy');
+    login("joe.schmoe@company.com", "SuperSecretPassword123").then(() => {
+        // Initialize a MongoDB Service Client
+        const mongodb = stitchClient.getServiceClient(
+            RemoteMongoClient.factory,
+            "mongodb-atlas"
         );
+        // Get a hook to the employees collection
+        const employees = mongodb.db("reserve").collection("employees");
+        
+        return employees.find({}, {
+            // limit: 3,
+            // sort: { "salary": -1 }
+        })
+        .asArray();
+    })
+    .then(displayEmployees)
+    
+    function login(email, password) {
+        const credential = new UserPasswordCredential(email, password);
+        return stitchClient.auth.loginWithCredential(credential);
+    }
+    // Renders the the employees' information in the table
+    function displayEmployees(employees) {
+        const employeesTableBody = document.getElementById("employees");
+        const numResultsEl = document.getElementById("num-results");
+        const tableRows = employees.map(employee => {
+            return `
+            <tr>
+                <td>${employee.name.last}, ${employee.name.first}</td>
+                <td>${employee.email}</td>
+                <td>${employee.role}</td>
+                <td>${employee.manager.name.first} ${employee.manager.name.last} (${employee.manager.id || "no manager"})</td>
+                <td>${employee.salary}</td>
+            </tr>
+            `;
+        });
+        employeesTableBody.innerHTML = tableRows.join("");
+        numResultsEl.innerHTML = employees.length;
+    }
+
+    const db = client.getServiceClient(stitch.RemoteMongoClient.factory, 'mongodb-atlas')
+                     .db("reserve");
+    client.auth.loginWithCredential(new stitch.AnonymousCredential())
+    .then(() =>
+        db.collection("clients").insertOne({"name":"teste", $push: { contacts: { "phoneNumber": "6566446465" } } })
+        .then(docs => {
+            console.log("Found docs", docs)
+            console.log("[MongoDB Stitch] Connected to Stitch")
+        }).catch(err => {
+            console.error(err)
+        })
+    );
+  </script>
       </script>
     <script type="text/javascript">
 //         app.initialize();
