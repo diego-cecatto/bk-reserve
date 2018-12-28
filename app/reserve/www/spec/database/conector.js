@@ -3,7 +3,8 @@
 const {
     Stitch,
     RemoteMongoClient,
-    UserPasswordCredential
+    UserPasswordCredential,
+    UserApiKeyCredential
 } = stitch;
 var db = null;
 class DBConect{
@@ -13,8 +14,9 @@ constructor() {
     this.db = null;
     this.config = {
         APIKEY :'',
-        email: '',
-        password: ''
+        email: 'diego.cecatto@hotmail.com',
+        password: 'Forever_!1',
+        APIKEY :'fMd8fhxcFqIZV6664DpI6gEKoDGphExOWAXXWObrD5DNhbJLgwQq08cOg0lXGTY6'
     }
     const dbConector = this;
     this.client = Stitch.initializeDefaultAppClient('reserve-rsfqy');
@@ -28,8 +30,9 @@ constructor() {
     });
 }
 login() {
-    //const credential = new UserPasswordCredential(this.config.email, this.config.password);
-    //return client.auth.loginWithCredential(credential);
+    const credential = new UserApiKeyCredential(this.config.APIKEY)
+    //const credential = UserPasswordCredential(this.config.email, this.config.password);
+    return this.client.auth.loginWithCredential(credential);
     return this.client.auth.loginWithCredential(new stitch.AnonymousCredential())
 }
 addQueue(action, collection, params, callback) {

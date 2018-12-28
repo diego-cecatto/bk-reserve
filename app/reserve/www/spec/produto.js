@@ -1,5 +1,5 @@
 function salvar(data) {
-    // var produtoModel = new Produto();
+    var produtoModel = new Produto();
     console.log(data);
     //produtoModel.deleteOne(data);
 }
