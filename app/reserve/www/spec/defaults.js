@@ -84,7 +84,8 @@ class Page{
         var extras = [];
         var defaults = ['spec/lib/bootstrap/css/bootstrap-reboot.min.css',
                         'spec/lib/bootstrap/css/bootstrap.min.css',
-                        'spec/lib/bootstrap/css/bootstrap-grid.min.css'];
+                        'spec/lib/bootstrap/css/bootstrap-grid.min.css',
+                        'spec/lib/font-awesome/all.min.css'];
         if(extras[this.page] !== undefined) {
             defaults = defaults.concat(extras[this.page]);
         }
