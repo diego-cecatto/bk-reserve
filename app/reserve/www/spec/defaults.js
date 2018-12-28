@@ -54,26 +54,43 @@ class Page{
     //load a default scripts into page
     //load a default css into page
     bundleJS(){
-        this.breadcrumb = '../../';
+        var extras = [];
+        extras["form"] = [
+            'spec/database/stitch.js',
+            'spec/database/conector.js',
+            'spec/database/model/generic.js',
+            'spec/form.js',
+        ];
+        extras["produtos"] = ['spec/lib/data-table.js'];
+        extras["produto"] = extras["form"].concat([
+                            'spec/database/model/produto.js',
+                            'spec/produto.js'
+                            ]);
+        extras['index'] = ['js/index.js']
         var defaults = [
                         'spec/lib/jquery-3.3.1.min.js',
                          'cordova.js',
-                         //'js/'+ this.page + '.js',
                          'spec/lib/bootstrap/js/bootstrap.min.js'
                     ];
-        for(var idc = 0 ; idc < defaults.length; idc ++) {
-            Script.include(this.breadcrumb + defaults[idc]);
+        if(extras[this.page] !== undefined) {
+            defaults = defaults.concat(extras[this.page]);
         }
-        app.initialize();
+        for(var idc = 0 ; idc < defaults.length; idc ++) {
+            Script.include(defaults[idc]);
+        }
+        //app.initialize();
     }
     bundlesCSS(){
+        var extras = [];
         var defaults = ['spec/lib/bootstrap/css/bootstrap-reboot.min.css',
                         'spec/lib/bootstrap/css/bootstrap.min.css',
                         'spec/lib/bootstrap/css/bootstrap-grid.min.css'];
-        this.breadcrumb = '../../';
+        if(extras[this.page] !== undefined) {
+            defaults = defaults.concat(extras[this.page]);
+        }
         for(var idc = 0 ; idc < defaults.length; idc ++) {
             var link = document.createElement('link');
-            link.setAttribute('href',this.breadcrumb + defaults[idc]);
+            link.setAttribute('href', defaults[idc]);
             link.setAttribute('type','text/css');
             link.setAttribute('rel','stylesheet');
             document.getElementsByTagName('head')[0].appendChild(link);

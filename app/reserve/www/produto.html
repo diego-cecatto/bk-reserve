@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+        <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' gap:; style-src 'self' 'unsafe-inline'; media-src *" />
+        <title>Produto</title>
+    </head>
+    <body>
+            <form>
+                <input type="hidden" name="id"/>
+                <div class="form-group">
+                    <label for="name">Nome</label>
+                    <input type="text" class="form-control" required='required' name="name" placeholder="Nome">
+                </div>
+                <div class="form-group">
+                    <label for="value">Valor</label>
+                    <input type="text" class="form-control" required='required' name="name" placeholder="Valor">
+                </div>
+                <div class="form-group">
+                    <label for="stock">Estoque</label>
+                    <input type="text" class="form-control" required='required' name="stock" placeholder="Estoque">
+                </div>
+                <button id="salvar" type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+    </body>
+    <script type="text/javascript" src="spec/defaults.js"></script>
+</html>

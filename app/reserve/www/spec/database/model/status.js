@@ -1,3 +1,9 @@
+/*
+    schema:
+    {
+        name
+    }
+*/
 class Status extends genericModel{
     constructor(){
         super();
