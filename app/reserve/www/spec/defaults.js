@@ -59,7 +59,7 @@ class Page{
             'spec/database/stitch.js',
             'spec/database/conector.js',
             'spec/database/model/generic.js',
-            'spec/form.js',
+            'spec/form-helper.js',
         ];
         extras["produtos"] = ['spec/lib/data-table.js'];
         extras["produto"] = extras["form"].concat([
