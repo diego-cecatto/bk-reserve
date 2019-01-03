@@ -9,69 +9,71 @@
         <title>Cliente</title>
     </head>
     <body>
-        <form>
-            <div class="form-group">
-                <label for="client">Cliente</label>
-                <input type="text" class="form-control" placeholder="Cliente">
-                Se ao digitar não traz o cliente existente pede para cadastrar novo
-            </div>
-            <div class="form-group">
-                <label for="client">Entregue</label>
-                <input type="text" class="form-control">
-                Aparece somente em edição
-            </div>
-            <div class="form-group">
-                <label for="contato">Status</label>
-                <select class="form-control" name="status">
-                </select>
-                *select com campo input, ou opção novo
-            </div>
-            <div class="form-group">
-                <label for="dateDelivery">Data para Entrega</label>
-                <input type="text" class="form-control" placeholder="Data Entrega">
-                Usar componente de seleção de datas
-            </div>
-            <div class="form-group">
-                <label for="dateDelivery">Hora para Entrega</label>
-                <input type="text" class="form-control" placeholder="Hora Entrega">
-                componente de máscara
-            </div>
-            <div>Pago:</div>
-            <div>Pago:</div>
-            <div>
-                Produtos
-                    *fazer uma carga inicial e alterar essa carga caso sofram alterações
-                    *clientes também
-                Adicionar e remover * assim como nos contatos
-                Colocar campo de valor acordado por unidade, para que nos assados possa servir como valor de peso
+        <div class="container-fluid">
+            <form>
                 <div class="form-group">
-                    <label for="products[name][]">Produto</label>
-                    <input type="text" class="form-control" placeholder="Produto">
+                    <label for="client">Cliente</label>
+                    <input type="text" class="form-control" placeholder="Cliente">
+                    Se ao digitar não traz o cliente existente pede para cadastrar novo
+                </div>
+                <div class="form-group">
+                    <label for="client">Entregue</label>
+                    <input type="text" class="form-control">
+                    Aparece somente em edição
+                </div>
+                <div class="form-group">
+                    <label for="contato">Status</label>
+                    <select class="form-control" name="status">
+                    </select>
+                    *select com campo input, ou opção novo
+                </div>
+                <div class="form-group">
+                    <label for="dateDelivery">Data para Entrega</label>
+                    <input type="text" class="form-control" placeholder="Data Entrega">
+                    Usar componente de seleção de datas
+                </div>
+                <div class="form-group">
+                    <label for="dateDelivery">Hora para Entrega</label>
+                    <input type="text" class="form-control" placeholder="Hora Entrega">
                     componente de máscara
                 </div>
-                <div class="form-group">
-                    <label for="products[quantity][]">Quantidade</label>
-                    <input type="text" class="form-control" placeholder="Quantidade">
-                    componente de máscara
+                <div>Pago:</div>
+                <div>Pago:</div>
+                <div>
+                    Produtos
+                        *fazer uma carga inicial e alterar essa carga caso sofram alterações
+                        *clientes também
+                    Adicionar e remover * assim como nos contatos
+                    Colocar campo de valor acordado por unidade, para que nos assados possa servir como valor de peso
+                    <div class="form-group">
+                        <label for="products[name][]">Produto</label>
+                        <input type="text" class="form-control" placeholder="Produto">
+                        componente de máscara
+                    </div>
+                    <div class="form-group">
+                        <label for="products[quantity][]">Quantidade</label>
+                        <input type="text" class="form-control" placeholder="Quantidade">
+                        componente de máscara
+                    </div>
+                    <div class="form-group">
+                        <label for="products[value][]">Valor</label>
+                        <input type="text" class="form-control" placeholder="Valor">
+                        componente de máscara
+                    </div>
+                    <div class="form-group">
+                        Total:
+                    </div>
                 </div>
+                <div>Total Final:</div>
                 <div class="form-group">
-                    <label for="products[value][]">Valor</label>
-                    <input type="text" class="form-control" placeholder="Valor">
-                    componente de máscara
+                    <div class="form-group">
+                        <label for="details">Detalhes</label>
+                        <textarea class="form-control" name="details" rows="3"></textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    Total:
-                </div>
-            </div>
-            <div>Total Final:</div>
-            <div class="form-group">
-                <div class="form-group">
-                    <label for="details">Detalhes</label>
-                    <textarea class="form-control" name="details" rows="3"></textarea>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     </body>
     <script type="text/javascript" src="spec/defaults.js"></script>
 </html>

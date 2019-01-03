@@ -8,6 +8,7 @@ var Script = {
         }
         // request file synchronous
         xhttp = new XMLHttpRequest();
+        console.log(script);
         xhttp.open("GET",script,false);
         xhttp.send();
         var code = xhttp.responseText;
@@ -32,7 +33,6 @@ var Script = {
         this._loadedScripts.push(script);
     }
 };
-
 class Page{
     constructor(){
         this.definePage();
@@ -43,6 +43,9 @@ class Page{
     definePage(){
         this.page = window.location.pathname.replace('/','')
                                             .replace('.html','')
+        if(this.page == '') {
+            this.page = 'index';
+        }
     }
     buildMenu() {
         $.get("html/partials/menu.html").done(function(data){
@@ -59,14 +62,18 @@ class Page{
             'spec/database/stitch.js',
             'spec/database/conector.js',
             'spec/database/model/generic.js',
-            'spec/form-helper.js',
+            'spec/lib/form-helper.js',
         ];
         extras["produtos"] = ['spec/lib/data-table.js'];
         extras["produto"] = extras["form"].concat([
                             'spec/database/model/produto.js',
                             'spec/produto.js'
                             ]);
-        extras['index'] = ['js/index.js']
+        extras["cliente"] = extras["form"].concat([
+                            'spec/database/model/clients.js',
+                            'spec/cliente.js'
+                            ]);
+        extras['index'] = ['js/index.js'] 
         var defaults = [
                         'spec/lib/jquery-3.3.1.min.js',
                          'cordova.js',
@@ -78,14 +85,13 @@ class Page{
         for(var idc = 0 ; idc < defaults.length; idc ++) {
             Script.include(defaults[idc]);
         }
-        //app.initialize();
     }
     bundlesCSS(){
         var extras = [];
         var defaults = ['spec/lib/bootstrap/css/bootstrap-reboot.min.css',
                         'spec/lib/bootstrap/css/bootstrap.min.css',
                         'spec/lib/bootstrap/css/bootstrap-grid.min.css',
-                        'spec/lib/font-awesome/all.min.css'];
+                        'spec/lib/font-awesome/css/all.min.css'];
         if(extras[this.page] !== undefined) {
             defaults = defaults.concat(extras[this.page]);
         }
@@ -99,4 +105,6 @@ class Page{
     }
 }
 new Page();
-
+function direct(page) {
+    window.location.href = page;
+}

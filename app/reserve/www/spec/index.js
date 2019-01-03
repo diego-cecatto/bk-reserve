@@ -47,3 +47,5 @@ describe('app', function() {
         });
     });
 });
+
+app.initialize();

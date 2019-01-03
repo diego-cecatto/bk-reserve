@@ -103,5 +103,130 @@ class Validators {
             var json = toJSONString( this );
             salvar(json);
         }, false);
+        document.getElementById('cancel').addEventListener( "click", function( e ) {
+            e.preventDefault();
+            window.location.href = this.attr(ref);
+        }, false);
     });
 })();
+
+//multi-fields
+//reference
+//single
+class MultiField{
+    constructor(){
+        //faz o bind no campo principal
+    }
+    build() {
+        this.field.parent().append(
+            $("<div>",{id:this.config.id}).append(
+                $("<div>",{id:'data-'+this.config.id})
+            )
+        );
+        var boxMulti = document.getElementById(this.config.id);
+        this.field.appendTo(boxMulti);
+        boxMulti.append(
+            $("<div>",{id:'icon-contents'}).append(
+                $('<i>',{class:'fas fa-alert'}),
+                $('<i>',{class:'fas fa-trash'})
+            )
+        );
+        //terá um campo alerta, caso a validação estteja errada
+        //o telefone pode ser definido quando se insere o telefone com a máscara correta, cria um espelho do campo
+        //o telefone pode ser removido quando ele remove todo o campo e sai dele, ou quando clica no botão excluir
+        //estes evento de excluir irá estar disponível somente nos campos espelhados
+    }
+    add() {
+        if(! this.valid()) {
+            return;
+        }
+        $('data-'+this.id).append(
+            $('<div>').append(
+                $('<input>', { value: this.field.value }),
+                $("<div>",{id:'icon-contents'}).append(
+                    $('<i>',{class:'fas fa-alert'}),
+                    $('<i>',{class:'fas fa-trash'})
+                )
+            )
+        );
+    }
+    remove(id) {
+        $(id).remove();
+    }
+    valid(){
+        //se não houver validação o campo está sendo considerado como válido e retornará true somente qundo tirar o foco do campo
+        //case not are a validation method
+        return (this.config.validation());
+    }
+}
+class Autocomplete{
+    constructor(config) {
+        console.log('build autocomplete')
+        this.config = {};
+        for(let conf in config) {
+            this.config[conf] = config[conf];
+        }
+        this.config.id = this.config.id.toString()
+                                       .replace( '[', '-')
+                                       .replace(/]|'/g, '')
+        console.log(this.config);
+        this.build();
+    }
+    build() {
+        // console.log(this.config.field.parent());
+        // this.config.field.parent().append(
+        //     $("<div>", {id: this.config.id})
+        // );
+        // this.config.field.appendTo(this.config.id);
+        this.config.field.parent().append(
+            $("<div>", {id: 'options-' + this.config.id})
+        );
+        var autocomplete = this;
+        this.config.field.bind('blur keyup change',function(){
+            autocomplete.search($(this).val());
+        })
+    }
+    search(query) {
+        console.log(query);
+        this.showOptions([{id:1 , value: 'teste'}])
+        // var data = {} ;
+        // atcplte = this;
+        // data[this.config.param] = query ; 
+        // $.ajax({
+        //     url: this.config.url,
+        //     data: data,
+        //     success:function(data){
+        //         atcplte.showOptions(data);
+        //     }
+        // })
+    }
+    add(id, value) {
+        console.log('add');
+    }
+    validate() {
+
+    }
+    showOptions(options) {
+        var htmlOptions = [];
+        var autocomplete = this;
+        for (let idcOptions = 0; idcOptions < options.length; idcOptions++) {
+            const option = options[idcOptions];
+            htmlOptions.push($('<div>', { text: option.value }).on('click',function(){
+                autocomplete.add(option.id, option.value)
+            }))
+        }
+        $("#options-" + this.config.id).html(
+            htmlOptions
+        );
+    }
+    highlightQuery(value){
+        console.log('highlightlting value')
+    }
+}
+
+$(document).ready(function(){
+    $(".autocomplete").each(function(i,field){
+        var logic = new Autocomplete({ field: $(field), id: field.id });
+    });
+})
+

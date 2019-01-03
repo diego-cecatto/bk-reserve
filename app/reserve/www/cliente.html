@@ -9,17 +9,23 @@
         <title>Cliente</title>
     </head>
     <body>
-        <form>
-            <div class="form-group">
-                <label for="nome">Nome</label>
-                <input type="text" class="form-control" placeholder="Nome Cliente">
-            </div>
-            <div class="form-group">
-                <label for="contato">Contatos</label>
-                <input type="text" class="form-control" id="contato" placeholder="contato[]"> <span id="addContato">Adicionar</span>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        <div class="container-fluid">
+            <form>
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" class="form-control" placeholder="Nome Cliente">
+                </div>
+                <div class="form-group">
+                    <label for="contato">Contatos</label>
+                    <input type="text" class="form-control autocomplete" id="contato['phoneNumber']" placeholder="contato"> <span id="addContato">Adicionar</span>
+                    <i class="fas fa-plus"></i>
+                    botão adicionar e quando adicioan cria um input hidden e um label
+                    a pagina pode ser carregada no modo edição
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button id="cancel" class="btn">Cancelar</button>
+            </form>
+        </div>
     </body>
     <script type="text/javascript" src="spec/defaults.js"></script>
 </html>

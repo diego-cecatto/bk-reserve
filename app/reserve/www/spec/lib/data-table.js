@@ -14,7 +14,7 @@ class DataTable {
         this.build();
     }
     getFields() {
-        const childs = config.datatable.children;
+        const childs = this.config.datatable.children;
         for (let idcChild = 0; idcChild < childs.length; idcChild++) {
             const child = childs[idcChild];
             if(child.name == 'exp') {
@@ -67,4 +67,4 @@ class DataTable {
         this.table.append(tbody);
     }
 }
-datatable = new DataTable({fields:[{name:'name',description:"Nome"},{name:'age',description:"Idade"}],data:[{name:'teste',age:21}]});
+datatable = new DataTable();
