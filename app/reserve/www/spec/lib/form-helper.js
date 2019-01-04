@@ -114,32 +114,38 @@ class Validators {
 //reference
 //single
 class MultiField{
-    constructor(){
+    constructor(config){
         //faz o bind no campo principal
+        this.config = config;
+        this.config.id = this.config.field.attr('id')
+                                            .toString()
+                                            .replace(/]|'/g, '')
+                                            .replace( /\[/g, '-');
+                                            
+        this.build();
     }
     build() {
-        this.field.parent().append(
-            $("<div>",{id:this.config.id}).append(
-                $("<div>",{id:'data-'+this.config.id})
-            )
+        var container = $('<div>', { id: 'multi-' + this.config.id }).append(
+                            $("<div>" , {id:'data-' + this.config.id})
+                        );
+        this.config.field.parent().append(
+             container
         );
-        var boxMulti = document.getElementById(this.config.id);
-        this.field.appendTo(boxMulti);
-        boxMulti.append(
-            $("<div>",{id:'icon-contents'}).append(
-                $('<i>',{class:'fas fa-alert'}),
-                $('<i>',{class:'fas fa-trash'})
-            )
-        );
+        this.config.field.appendTo(container);
         //terá um campo alerta, caso a validação estteja errada
-        //o telefone pode ser definido quando se insere o telefone com a máscara correta, cria um espelho do campo
-        //o telefone pode ser removido quando ele remove todo o campo e sai dele, ou quando clica no botão excluir
-        //estes evento de excluir irá estar disponível somente nos campos espelhados
-    }
+        container.append(
+             $("<div>",{id:'icon-contents'}).append(
+                 $('<i>',{class:'fas fa-alert'}),
+            )
+        );
+            }
     add() {
         if(! this.valid()) {
             return;
         }
+        //o telefone pode ser definido quando se insere o telefone com a máscara correta, cria um espelho do campo
+        //o telefone pode ser removido quando ele remove todo o campo e sai dele, ou quando clica no botão excluir
+        //estes evento de excluir irá estar disponível somente nos campos espelhados
         $('data-'+this.id).append(
             $('<div>').append(
                 $('<input>', { value: this.field.value }),
@@ -168,7 +174,7 @@ class Autocomplete{
         }
         this.config.id = this.config.id.toString()
                                        .replace( '[', '-')
-                                       .replace(/]|'/g, '')
+                                       .replace(/]|'/g, '');
         console.log(this.config);
         this.build();
     }
@@ -225,8 +231,11 @@ class Autocomplete{
 }
 
 $(document).ready(function(){
-    $(".autocomplete").each(function(i,field){
-        var logic = new Autocomplete({ field: $(field), id: field.id });
-    });
+    // $(".autocomplete").each(function(i,field){
+    //     var logic = new Autocomplete({ field: $(field), id: field.id });
+    // });
+    $('.multi-field').each(function(idc,field){
+        var multi = new MultiField({field : $(field)});
+    })
 })
 
