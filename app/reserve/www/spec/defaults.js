@@ -62,6 +62,7 @@ class Page{
             'spec/database/stitch.js',
             'spec/database/conector.js',
             'spec/database/model/generic.js',
+            'spec/lib/jquery.mask.min.js',
             'spec/lib/form-helper.js',
         ];
         extras["produtos"] = ['spec/lib/data-table.js'];
