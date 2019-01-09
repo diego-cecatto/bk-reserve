@@ -75,6 +75,7 @@ class Page{
                             'spec/cliente.js'
                             ]);
         extras['index'] = ['js/index.js'] 
+        extras['reserva'] = extras["form"].concat(['spec/reserva.js'])
         var defaults = [
                         'spec/lib/jquery-3.3.1.min.js',
                          'cordova.js',
@@ -89,6 +90,8 @@ class Page{
     }
     bundlesCSS(){
         var extras = [];
+        extras['cliente'] = ['css/form.css'];
+        extras['reserva'] = ['css/form.css'];
         var defaults = ['spec/lib/bootstrap/css/bootstrap-reboot.min.css',
                         'spec/lib/bootstrap/css/bootstrap.min.css',
                         'spec/lib/bootstrap/css/bootstrap-grid.min.css',

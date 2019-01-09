@@ -1,0 +1,8 @@
+.data-multifield,.data-multifield .data-item{
+    position: relative;
+}
+.data-multifield .icons {
+    right: 8px;
+    top: 8px;
+    position: absolute;
+}

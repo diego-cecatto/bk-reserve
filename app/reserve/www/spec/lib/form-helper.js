@@ -121,23 +121,32 @@ class Validators {
 //pensar em como irá adicionar uma referência de contato nas reservas, ou de produtos
     //pode ser um formulário/modal
 class ExternalForm {
-    constructor () {
+    constructor (configurations) {
+        this.config = configurations;
+        this.config.url = this.config.id +'.html';
+        this.config.urlModal = 'html/partials/modal.html';
+        var externalForm = this;
+        //caso ele já exista retorna
         $.ajax({
             url: this.config.urlModal,
             success : function(modal){
+                var modal = $(modal);
                 $.ajax({
-                    url: this.config.url,
+                    url: externalForm.config.url,
                     success : function(html) {
-                        var form = $(hmtl).find('form');
-                        //remove os botões default do form ????
+                        var form = $(html).find('form');
+                        //pode esconder os botões e executa a ação depois através do trigger destes botões
+                        //como providenciar as ações naturais do form ?
+                        //javascripts ????
+                        var title = $($(title)['html']).find('title').html();
                         modal.find("#salvar").on('click', function() {
                             //redireciona para salvar o formulário
                         })
-                        modal.replace('{{id}}', this.config.id)
-                            .replace('{{body}}', form)
-                            .replace('{{title}}', this.config.title)
-                        window.html.append(modal)
-                        $(this.config.id).modal();
+                        modal = modal.html().replace('{{id}}', externalForm.config.id)
+                            .replace('{{body}}', form.html())
+                            .replace('{{title}}',title)//pode ser o breadcrumb da página
+                        $(document).find('html').append(modal)
+                        $(externalForm.config.id).modal();
                     }
                 })
             }
@@ -149,7 +158,9 @@ class MultiField {
         this.config = {
             externButtons : [],
             id : '',
-            field: null
+            mask: '',
+            field: null, 
+            defaultValue : ''
         };
         for(var conf in this.config){
             if(config[conf] == undefined) {
@@ -166,8 +177,10 @@ class MultiField {
     }
     build() {
         var multifieldRef = this;
+        var containerField = $('<div>',{ class: 'data-multifield' });
         var container = $('<div>', { id: 'multi-' + this.config.id }).append(
-                            $("<div>" , {id:'data-' + this.config.id})
+                            $("<div>" , { id:'data-' + this.config.id , class: 'data-multifield'}),
+                            containerField
                         );
         var btnAdd = $('<i>',{class:'fas fa-plus'}).on('click',function(){
             multifieldRef.add();
@@ -185,7 +198,7 @@ class MultiField {
         this.config.field.parent().append(
              container
         );
-        this.config.field.appendTo(container);
+        this.config.field.appendTo(containerField);
         if( multifieldRef.config.fnValidation != undefined ) {
             this.config.field.on('blur change keyup', function() {
                 if($(this).val() == "") {
@@ -197,20 +210,21 @@ class MultiField {
             })
         } else {
             this.config.field.on('keyup', function(event) {
-                if( event.key.code == 13 ) {
-                    btnAdd.click();
+                if( event.keyCode == 13 ) {
+                    btnAdd.trigger('click');
                 }
             });
             this.config.field.on('blur', function(event) {
-                btnAdd.click();
+                btnAdd.trigger('click');
             });
         }
         if(this.config.mask !== undefined) {
-            this.config.field.mask(this.config.mask);
+            new Mask(this.config.field, this.config.mask);
         }
-        container.append(
-             $("<div>",{class:'icons'}).append(
-                 WarningField.build(),
+        this.warningValidation = new WarningField();
+        containerField.append(
+             $("<div>",{ class:'icons' }).append(
+                this.warningValidation.build(),
                  btnAdd,
                  externaButtons
            )
@@ -221,7 +235,7 @@ class MultiField {
             return false;
         }
         var multifieldRef = this;
-        var input = $('<input>', { value: this.config.field.val() })
+        var input = $('<input>', { value: this.config.field.val(), class:'form-control' })
         .on('change blur', function(){
             console.log('chenge: valida o campo para ver se o usuário não preencheu indevidaemnte');
             if($(this).val() == "") {
@@ -233,49 +247,67 @@ class MultiField {
             console.log('valida o campo para ver se o usuário não preencheu indevidaemnte');
         });
         if(this.config.mask !== undefined) {
-            input.mask(this.config.mask);
+            new Mask(input, this.config.mask);
         }
+        //this.warningValidation = new WarningField();
         $('#data-' + this.config.id).append(
-            $('<div>').append(
+            $('<div>', {class:'data-item'}).append(
                 input,
                 $("<div>",{class:'icons'}).append(
-                    WarningField.build(),
+                    //this.warningValidation.build(),
                     $('<i>',{class:'fas fa-trash'}).on('click',function() {
                         $(this).parent().parent().remove();
                     })
                 )
             )
         );
-        this.config.field.val('');
+        this.config.field.val(this.config.defaultValue);
     }
     valid(field){
-        WarningField.addAlert(field);
+        this.warningValidation.remove();
+        if(this.config.field.val() == this.config.defaultValue || this.config.field.val() == '') {
+            return false;
+        }
         if (this.config.fnValidation == undefined ) {
             return true;
         }
-        var isValid =  this.config.fnValidation(field.val());
+        var isValid = this.config.fnValidation(field.val());
         if(isValid) {
             return true;
         }
-        WarningField.remove(field);
+        this.warningValidation.add();
         return false;
     }
 }
 class Autocomplete {
     constructor(config) {
-        this.config = {};
-        for(let conf in config) {
+        this.config = {
+            field: null,
+            data: [{id:'1' , value:'teste1'},{id:'2' , value:'teste1'}]
+        };
+        for(let conf in this.config) {
+            if(config[conf] == undefined) {
+                continue;
+            }
             this.config[conf] = config[conf];
         }
-        this.config.id = this.config.id.toString()
-                                       .replace( '[', '-')
-                                       .replace(/]|'/g, '');
+        this.config.id = this.config.field.attr('name').toString()
+                                                        .replace( '[', '-')
+                                                        .replace(/]|'/g, '');
         this.build();
     }
     build() {
         this.options = $("<div>", { id: 'options-' + this.config.id });
+        var acomplete = this;
         this.config.field.after(
-            this.options
+            this.options,
+            $('<div>', {class:'icons'}).append(
+                $('<i>', {class: 'fas fa-plus'}).on('click',function(){
+                    //abrir modal com o formulário
+                    new ExternalForm({id: acomplete.config.id});
+                }),
+                $('<i>', { class: 'fas fa-warning' })
+            )
         );
         var autocomplete = this;
         this.config.field.bind('blur keyup change',function(){
@@ -285,7 +317,9 @@ class Autocomplete {
     search(query) {
         this.options.html('');
         var refAutoComplete = this;
-        if(this.data == null) {
+        if( this.data == null ) {
+            //pega com base no id
+            //instancia a classe de referência dos models
             if( this.config.url == undefined ) {
                 return;
             }    
@@ -317,19 +351,20 @@ class Autocomplete {
         this.fnAdd(id, value);
         this.fnAfterAdd(id, value);
     }
-}
+}   
 class WarningField {
-    static icon(field) {
-        field.next('.icons').find('.fa-alert');
+    constructor(){
+        
     }
-    static add() {
-        this.icon(field).addClass('fa-alert');
+    add() {
+        this.icon.addClass('fa-alert');
     }
-    static remove(field) {
-        this.icon(field).removeClass('fa-alert');
+    remove(field) {
+        this.icon.removeClass('fa-alert');
     }
-    static build() {
-        return $('<i>',{ class:'fas fa-alert' });
+    build() {
+        this.icon = $('<i>',{ class:'fas' });
+        return this.icon;
     }
 }
 //como misturar os dois??
@@ -339,8 +374,31 @@ $(document).ready(function(){
     // $(".autocomplete").each(function(i,field){
     //     var logic = new Autocomplete({ field: $(field), id: field.id });
     // });
-    $('.multi-field').each(function(idc,field){
-        var multi = new MultiField({field : $(field)});
-    })
+   
 })
 
+class Mask {
+    constructor(input, mask) {
+        if(input == undefined) {
+            console.log('Input não encontrado para aplicar a máscara');
+            return;
+        }
+        if ( mask == 'celphone') {
+            var SPMaskBehavior = function (val) {
+                return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+              },
+              spOptions = {
+                onKeyPress: function(val, e, field, options) {
+                    field.mask(SPMaskBehavior.apply({}, arguments), options);
+                  }
+              };
+            input.mask(SPMaskBehavior, spOptions)
+            return;
+        }
+        if(mask == 'money') {
+            input.mask('#.##0,00', {reverse: true});
+            return;
+        }
+        console.log('máscara não encontrada');
+    }
+}

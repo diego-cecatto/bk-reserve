@@ -3,3 +3,6 @@ function salvar(data) {
     console.log(data);
     //produtoModel.deleteOne(data);
 }
+$(window).ready(function(){
+    new Mask($('#valor'), 'money');
+})

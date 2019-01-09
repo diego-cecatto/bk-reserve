@@ -16,7 +16,6 @@ describe('app', function() {
             });
         });
     });
-
     describe('onDeviceReady', function() {
         it('should report that it fired', function() {
             spyOn(app, 'receivedEvent');
@@ -24,7 +23,6 @@ describe('app', function() {
             expect(app.receivedEvent).toHaveBeenCalledWith('deviceready');
         });
     });
-
     describe('receivedEvent', function() {
         beforeEach(function() {
             var el = document.getElementById('stage');
