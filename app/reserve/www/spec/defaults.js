@@ -8,23 +8,9 @@ var Script = {
         }
         // request file synchronous
         xhttp = new XMLHttpRequest();
-        console.log(script);
         xhttp.open("GET",script,false);
         xhttp.send();
         var code = xhttp.responseText;
-        // if (Prototype.Browser.IE) {
-        //     window.execScript(code);
-        // } else if (Prototype.Browser.WebKit) {
-        //     $$("head").first().insert(Object.extend(
-        //         new Element("script", {
-        //             type: "text/javascript"
-        //         }), {
-        //             text: code
-        //         }
-        //     ));
-        // } else {
-        //     window.eval(code);
-        // }
         var script = document.createElement('script');
         script.setAttribute('type','text/javascript');
         script.innerHTML = code;
@@ -33,11 +19,32 @@ var Script = {
         this._loadedScripts.push(script);
     }
 };
+var CSS = {
+        _loadedCSS: [],
+        include: function(link) {
+            if (this._loadedCSS.indexOf(link) != -1) {
+                console.log('already exist');
+                return false;
+            }
+            xhttp = new XMLHttpRequest();
+            console.log(link);
+            xhttp.open("GET", link, false);
+            xhttp.send();
+            var code = xhttp.responseText;
+            
+            var style = document.createElement('style');
+            style.innerHTML = code;
+            // link.setAttribute('href', css);
+            // link.setAttribute('type','text/css');
+            // link.setAttribute('rel','stylesheet');
+            document.getElementsByTagName('head')[0].appendChild(style);
+        }
+}
 class Page{
     constructor(){
         this.definePage();
-        this.bundlesCSS();
-        this.bundleJS();
+        this.bundlesCSS(this.page);
+        this.bundleJS(this.page);
         this.buildMenu();
     }
     definePage(){
@@ -54,9 +61,13 @@ class Page{
         //into links 
         //url select menu active
     }
+    bundleDependence(page){
+        this.bundlesCSS(page);
+        this.bundleJS(page);
+    }
     //load a default scripts into page
     //load a default css into page
-    bundleJS(){
+    bundleJS(page){
         var extras = [];
         extras["form"] = [
             'spec/database/stitch.js',
@@ -81,34 +92,30 @@ class Page{
                          'cordova.js',
                          'spec/lib/bootstrap/js/bootstrap.min.js'
                     ];
-        if(extras[this.page] !== undefined) {
-            defaults = defaults.concat(extras[this.page]);
+        if(extras[page] !== undefined) {
+            defaults = defaults.concat(extras[page]);
         }
         for(var idc = 0 ; idc < defaults.length; idc ++) {
             Script.include(defaults[idc]);
         }
     }
-    bundlesCSS(){
+    bundlesCSS(page){
         var extras = [];
         extras['cliente'] = ['css/form.css'];
         extras['reserva'] = ['css/form.css'];
         var defaults = ['spec/lib/bootstrap/css/bootstrap-reboot.min.css',
                         'spec/lib/bootstrap/css/bootstrap.min.css',
                         'spec/lib/bootstrap/css/bootstrap-grid.min.css',
-                        'spec/lib/font-awesome/css/all.min.css'];
-        if(extras[this.page] !== undefined) {
-            defaults = defaults.concat(extras[this.page]);
+                        'spec/lib/font-awesome/css/all.css'];
+        if(extras[page] !== undefined) {
+            defaults = defaults.concat(extras[page]);
         }
         for(var idc = 0 ; idc < defaults.length; idc ++) {
-            var link = document.createElement('link');
-            link.setAttribute('href', defaults[idc]);
-            link.setAttribute('type','text/css');
-            link.setAttribute('rel','stylesheet');
-            document.getElementsByTagName('head')[0].appendChild(link);
+           CSS.include(defaults[idc]);
         }
     }
 }
-new Page();
+var page = new Page();
 function direct(page) {
     window.location.href = page;
 }

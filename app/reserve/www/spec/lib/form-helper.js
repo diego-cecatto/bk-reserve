@@ -35,7 +35,7 @@ class FormHelper {
     // }
     //verifica as linhas que não foram usadas e verifica se é um array, caso sim usa o construtor de multiplas-linhas
     //o campo por padrão já possui um campo na tela com multiplas linhas, caso o valor seja nulo
-    multiLines(name,values,type) {
+    multiLines(name, values, type) {
         //adiciona toda a estrutura de deleção e inserção
         //verificar quando é o valor ou uma bifurcação do objeto
         for(idcValues = 0 ; idcValues < values.legth; idcValues ++) {
@@ -130,23 +130,26 @@ class ExternalForm {
         $.ajax({
             url: this.config.urlModal,
             success : function(modal){
-                var modal = $(modal);
+                //console.log($(modal))
+                //var modal = $(modal);
                 $.ajax({
                     url: externalForm.config.url,
                     success : function(html) {
                         var form = $(html).find('form');
+                        modal = modal.replace('{{id}}', externalForm.config.id)
+                            .replace('{{body}}', form.html())
+                            .replace('{{title}}',title)//pode ser o breadcrumb da página
                         //pode esconder os botões e executa a ação depois através do trigger destes botões
                         //como providenciar as ações naturais do form ?
                         //javascripts ????
+                        modal = $(modal);
                         var title = $($(title)['html']).find('title').html();
-                        modal.find("#salvar").on('click', function() {
-                            //redireciona para salvar o formulário
-                        })
-                        modal = modal.html().replace('{{id}}', externalForm.config.id)
-                            .replace('{{body}}', form.html())
-                            .replace('{{title}}',title)//pode ser o breadcrumb da página
+                        // modal.find("#salvar").on('click', function() {
+                        //     //redireciona para salvar o formulário
+                        //     return;
+                        // }
                         $(document).find('html').append(modal)
-                        $(externalForm.config.id).modal();
+                        $('#' + externalForm.config.id).modal();
                     }
                 })
             }

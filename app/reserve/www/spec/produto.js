@@ -4,5 +4,5 @@ function salvar(data) {
     //produtoModel.deleteOne(data);
 }
 $(window).ready(function(){
-    new Mask($('#valor'), 'money');
+    new Mask($('#produto #valor'), 'money');
 })
