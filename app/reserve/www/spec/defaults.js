@@ -1,12 +1,10 @@
 var Script = {
     _loadedScripts: [],
     include: function(script) {
-        // include script only once
         if (this._loadedScripts.indexOf(script) != -1) {
             console.log('already exist');
             return false;
         }
-        // request file synchronous
         xhttp = new XMLHttpRequest();
         xhttp.open("GET",script,false);
         xhttp.send();
@@ -14,8 +12,7 @@ var Script = {
         var script = document.createElement('script');
         script.setAttribute('type','text/javascript');
         script.innerHTML = code;
-        document.getElementsByTagName('html')[0]
-                .appendChild(script);
+        document.body.appendChild(script);
         this._loadedScripts.push(script);
     }
 };

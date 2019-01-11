@@ -134,22 +134,24 @@ class ExternalForm {
                 //var modal = $(modal);
                 $.ajax({
                     url: externalForm.config.url,
-                    success : function(html) {
-                        var form = $(html).find('form');
+                    success : function(formHTML) {
+                        var form = $(formHTML).find('form');
+                        var idcTitleStart = formHTML.indexOf('<title>');
+                        var idcTitleEnd = formHTML.indexOf('</title>');
+                        var title = formHTML.substring(idcTitleStart + '<title>'.length, idcTitleEnd)
                         modal = modal.replace('{{id}}', externalForm.config.id)
                             .replace('{{body}}', form.html())
-                            .replace('{{title}}',title)//pode ser o breadcrumb da página
+                            .replace('{{title}}',title)
                         //pode esconder os botões e executa a ação depois através do trigger destes botões
                         //como providenciar as ações naturais do form ?
                         //javascripts ????
                         modal = $(modal);
-                        var title = $($(title)['html']).find('title').html();
                         // modal.find("#salvar").on('click', function() {
                         //     //redireciona para salvar o formulário
                         //     return;
                         // }
-                        $(document).find('html').append(modal)
-                        $('#' + externalForm.config.id).modal();
+                        $('body').append(modal)
+                        modal.modal();
                     }
                 })
             }
@@ -307,6 +309,7 @@ class Autocomplete {
             $('<div>', {class:'icons'}).append(
                 $('<i>', {class: 'fas fa-plus'}).on('click',function(){
                     //abrir modal com o formulário
+                    console.log(acomplete.config.id);
                     new ExternalForm({id: acomplete.config.id});
                 }),
                 $('<i>', { class: 'fas fa-warning' })
