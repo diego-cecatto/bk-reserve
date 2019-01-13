@@ -135,13 +135,14 @@ class ExternalForm {
                 $.ajax({
                     url: externalForm.config.url,
                     success : function(formHTML) {
-                        var form = $(formHTML).find('form');
+                       // g = formHTML;
+                        var form = $(formHTML).find('form').parent().html();
                         var idcTitleStart = formHTML.indexOf('<title>');
                         var idcTitleEnd = formHTML.indexOf('</title>');
                         var title = formHTML.substring(idcTitleStart + '<title>'.length, idcTitleEnd)
                         modal = modal.replace('{{id}}', externalForm.config.id)
-                            .replace('{{body}}', form.html())
-                            .replace('{{title}}',title)
+                                    .replace('{{body}}', form)
+                                    .replace('{{title}}',title)
                         //pode esconder os botões e executa a ação depois através do trigger destes botões
                         //como providenciar as ações naturais do form ?
                         //javascripts ????
@@ -151,6 +152,7 @@ class ExternalForm {
                         //     return;
                         // }
                         $('body').append(modal)
+                        page.bundleDependence(externalForm.config.id)
                         modal.modal();
                     }
                 })
@@ -287,9 +289,9 @@ class MultiField {
 class Autocomplete {
     constructor(config) {
         this.config = {
-            field: null,
-            data: [{id:'1' , value:'teste1'},{id:'2' , value:'teste1'}]
+            field: null
         };
+        this.data = [{id:'1' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'}];
         for(let conf in this.config) {
             if(config[conf] == undefined) {
                 continue;
@@ -302,28 +304,37 @@ class Autocomplete {
         this.build();
     }
     build() {
-        this.options = $("<div>", { id: 'options-' + this.config.id });
-        var acomplete = this;
-        this.config.field.after(
+        var autocompleteArea = $('<div>',{class: 'autocomplete'});
+        autocompleteArea.insertAfter(this.config.field);
+        this.options = $("<div>", { id: 'options-' + this.config.id,class:'autocomplete-options' });
+        var refAutocomplete = this;
+        autocompleteArea.append(
+            this.config.field,
             this.options,
             $('<div>', {class:'icons'}).append(
                 $('<i>', {class: 'fas fa-plus'}).on('click',function(){
-                    //abrir modal com o formulário
-                    console.log(acomplete.config.id);
-                    new ExternalForm({id: acomplete.config.id});
+                    new ExternalForm({id: refAutocomplete.config.id});
                 }),
                 $('<i>', { class: 'fas fa-warning' })
             )
         );
-        var autocomplete = this;
-        this.config.field.bind('blur keyup change',function(){
-            autocomplete.search($(this).val());
-        })
+        this.config.field.bind('keyup', function(event){
+            if(refAutocomplete.analyseKeys != undefined) {
+                if(refAutocomplete.analyseKeys(event)) {
+                    return;
+                }
+            }
+            refAutocomplete.search($(this).val());
+        }).attr('autocomplete','off')
     }
     search(query) {
         this.options.html('');
+        this.desvinculeKeys();
+        if(query.length == 0) {
+            return;
+        }
         var refAutoComplete = this;
-        if( this.data == null ) {
+        if(this.data == null ) {
             //pega com base no id
             //instancia a classe de referência dos models
             if( this.config.url == undefined ) {
@@ -337,21 +348,63 @@ class Autocomplete {
                 }
             })
         }
-        for (let idcData = 0; idcData < this.data.length; idcData++) {
-            const res = this.data[idcData];
+        for (var idcData = 0; idcData < this.data.length; idcData++) {
+            var res = this.data[idcData];
             var idcQuery = res.value.indexOf(query);
             if (idcQuery == -1) {
                 continue;
             }
             this.options.append(
                 $('<div>').append(
-                    res.value.replace(query/g,'<span class="highlight">' + query + '</span>')
+                    res.value.replace(new RegExp(query,"g"),'<span class="highlight">' + query + '</span>')
                 ).on('click' , function() {
-                    refAutoComplete.add(res.id, res.value);
+                    this.add(res.id, res.value);
                 })
             );
         }
-        this.showOptions();
+        if(this.options.length > 0 ) {
+            this.vinculeKeys();
+        }
+        //this.showOptions();
+    }
+    vinculeKeys() {
+        this.analyseKeys = function(event){
+            var selectedItem = this.options.find('.selected');
+            var ret = false;
+            g = this.options;
+            var next = undefined;
+            if(event.keyCode == 40) {
+                if(selectedItem.length == 0) {
+                    next = this.options.children().first();
+                } else{
+                    next = $(selectedItem).next();
+                    if(next.length == 0) {
+                        next = this.options.children().first();;
+                    }
+                }
+                ret = true;
+            }
+            if(event.keyCode == 38) {
+                if(selectedItem.length == 0) {
+                    next = this.options.children().last();
+                } else{
+                    next = $(selectedItem).prev();
+                    if(next.length == 0) {
+                        next = this.options.children().last();
+                    }
+                }
+                ret = true;
+            }
+            //console.log(next);
+            if(next !== undefined) {
+                selectedItem.removeClass('selected')
+                next.addClass('selected');
+            }
+            return ret;
+        }
+    }
+    desvinculeKeys () {
+        this.analyseKeys = undefined;
     }
     add(id, value) {
         this.fnAdd(id, value);
@@ -407,4 +460,4 @@ class Mask {
         }
         console.log('máscara não encontrada');
     }
-}
+}var g = null;

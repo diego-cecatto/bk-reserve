@@ -1,8 +1,14 @@
-.data-multifield,.data-multifield .data-item{
+.data-multifield, .data-multifield .data-item, .autocomplete{
     position: relative;
 }
-.data-multifield .icons {
+.data-multifield .icons, .autocomplete .icons{
     right: 8px;
     top: 8px;
     position: absolute;
+}
+.highlight {
+    color:orange;
+}
+.autocomplete-options .selected {
+    background-color: red;
 }

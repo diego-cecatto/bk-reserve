@@ -1,19 +1,20 @@
 var Script = {
     _loadedScripts: [],
-    include: function(script) {
-        if (this._loadedScripts.indexOf(script) != -1) {
+    include: function(url) {
+        if (this._loadedScripts.indexOf(url) != -1) {
             console.log('already exist');
             return false;
         }
+        console.log(url);
         xhttp = new XMLHttpRequest();
-        xhttp.open("GET",script,false);
+        xhttp.open("GET", url, false);
         xhttp.send();
         var code = xhttp.responseText;
         var script = document.createElement('script');
         script.setAttribute('type','text/javascript');
         script.innerHTML = code;
         document.body.appendChild(script);
-        this._loadedScripts.push(script);
+        this._loadedScripts.push(url);
     }
 };
 var CSS = {
