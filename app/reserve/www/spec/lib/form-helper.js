@@ -125,32 +125,29 @@ class ExternalForm {
         this.config = configurations;
         this.config.url = this.config.id +'.html';
         this.config.urlModal = 'html/partials/modal.html';
+        this.config.prefixId = 'modal';
         var externalForm = this;
-        //caso ele já exista retorna
+        //caso ele já exista retorna, só executa a ação de limpar o formulário
+        var modal = $('#' + externalForm.config.prefixId + externalForm.config.id);
+        if(modal.length > 0 ) {
+            modal.modal();
+            return;
+        }
         $.ajax({
             url: this.config.urlModal,
             success : function(modal){
-                //console.log($(modal))
-                //var modal = $(modal);
                 $.ajax({
                     url: externalForm.config.url,
                     success : function(formHTML) {
-                       // g = formHTML;
                         var form = $(formHTML).find('form').parent().html();
                         var idcTitleStart = formHTML.indexOf('<title>');
                         var idcTitleEnd = formHTML.indexOf('</title>');
                         var title = formHTML.substring(idcTitleStart + '<title>'.length, idcTitleEnd)
-                        modal = modal.replace('{{id}}', externalForm.config.id)
+                        modal = modal.replace('{{id}}', externalForm.config.prefixId + externalForm.config.id)
                                     .replace('{{body}}', form)
                                     .replace('{{title}}',title)
                         //pode esconder os botões e executa a ação depois através do trigger destes botões
-                        //como providenciar as ações naturais do form ?
-                        //javascripts ????
                         modal = $(modal);
-                        // modal.find("#salvar").on('click', function() {
-                        //     //redireciona para salvar o formulário
-                        //     return;
-                        // }
                         $('body').append(modal)
                         page.bundleDependence(externalForm.config.id)
                         modal.modal();
@@ -184,12 +181,12 @@ class MultiField {
     }
     build() {
         var multifieldRef = this;
-        var containerField = $('<div>',{ class: 'data-multifield' });
+        var containerField = $('<div>', { class: 'data-multifield' });
         var container = $('<div>', { id: 'multi-' + this.config.id }).append(
                             $("<div>" , { id:'data-' + this.config.id , class: 'data-multifield'}),
                             containerField
                         );
-        var btnAdd = $('<i>',{class:'fas fa-plus'}).on('click',function(){
+        var btnAdd = $('<i>', { class:'fas fa-plus' }).on('click', function(){
             multifieldRef.add();
         });
         //for this button or for data ??
@@ -197,7 +194,7 @@ class MultiField {
         for (let idcExtBtns = 0; idcExtBtns < this.config.externButtons.length; idcExtBtns++) {
             const btn = this.config.externButtons[idcExtBtns];
             externaButtons.push(
-                $('<i>', {class: btn.id}).on('click', function(){
+                $('<i>', { class: btn.id }).on('click', function(){
                     btn.fn();
                 })
             );
@@ -238,7 +235,7 @@ class MultiField {
         );
     }
     add() {
-        if(! this.valid()) {
+        if( !this.valid() ) {
             return false;
         }
         var multifieldRef = this;
@@ -286,6 +283,102 @@ class MultiField {
         return false;
     }
 }
+class MultiFieldV2 {
+    constructor(config){
+        this.config = {
+            area : null
+        }
+        for(var conf in this.config){
+            if(config[conf] == undefined) {
+                continue;
+            }
+            this.config[conf] = config[conf];
+        }
+        this.build();
+    }
+    build() {
+        //usar a classe de construção de ícones para os multicampos
+        //talvez o próprio campo faça a validação dos campos para averiguar se será adicionado o próximo campo ou não
+        //como funcionará os ids destes campos, icarão vazios
+        var multifieldRef = this;
+        this.dataContainer = $('<div>', { class: 'data-multifield' }).insertBefore(
+            this.config.area    
+        )
+        this.warningValidation = new WarningField();
+        // ,
+        //     $('<i>', { class:'fas fa-check' }).on('click', function(){
+        //         multifieldRef.add();
+        //     }),
+        //     $("<div>",{ class: 'icons' }).append(
+        //         this.warningValidation.build()
+        //    )
+        // console.log(this.getInputs())
+        this.getInputs().on('keyup', function(event) {
+            console.log('validar para adicionar item')
+            if( event.keyCode == 13 ) {
+                multifieldRef.add();
+            }
+        }).on('blur', function() {
+            multifieldRef.add();
+        });
+    }
+    getInputs() {
+        return this.config.area.find('input');
+    }
+    add() {
+        if( !this.valid() ) {
+            return false;
+        }
+        var multifieldRef = this;
+        var inputs = this.getInputs();
+        var dataItem = $('<div>', {class:'data-item'});
+        this.dataContainer.append(
+            dataItem.append(
+                multifieldRef.config.area.clone()
+            )
+        );
+        dataItem.find('input').on('change blur', function(){
+            console.log('chenge: campo vazio, remove, têm de havaliar todos os inputs');
+            for (var idcInputs = 0; idcInputs < inputs.length; idcInputs++) {
+                var input = inputs[idcInputs];
+                if($(input).val() != "") {
+                    return;    
+                }    
+            }
+            dataItem.remove();
+        })
+        .on('keyup',function() {
+            for (var idcInputs = 0; idcInputs < inputs.length; idcInputs++) {
+                var input = inputs[idcInputs];
+                console.log('continua a validação original ???');
+            }
+        });
+        new Icon({ area : dataItem
+                    , icon: $('<i>',{ class:'fas fa-trash' })
+                            .on('click',function() {
+                                dataItem.remove();
+                            })
+                        });
+        this.getInputs().val('');
+    }
+    valid(field) {
+        console.log('valida os multicampos');
+        return true;
+        // this.warningValidation.remove();
+        // if(this.config.field.val() == this.config.defaultValue || this.config.field.val() == '') {
+        //     return false;
+        // }
+        // if (this.config.fnValidation == undefined ) {
+        //     return true;
+        // }
+        // var isValid = this.config.fnValidation(field.val());
+        // if(isValid) {
+        //     return true;
+        // }
+        // this.warningValidation.add();
+        // return false;
+    }
+}
 class Autocomplete {
     constructor(config) {
         this.config = {
@@ -304,16 +397,16 @@ class Autocomplete {
         this.build();
     }
     build() {
-        var autocompleteArea = $('<div>',{class: 'autocomplete'});
+        var autocompleteArea = $('<div>', { class: 'autocomplete' });
         autocompleteArea.insertAfter(this.config.field);
-        this.options = $("<div>", { id: 'options-' + this.config.id,class:'autocomplete-options' });
+        this.options = $("<div>", { id: 'options-' + this.config.id, class:'autocomplete-options' });
         var refAutocomplete = this;
         autocompleteArea.append(
             this.config.field,
             this.options,
-            $('<div>', {class:'icons'}).append(
-                $('<i>', {class: 'fas fa-plus'}).on('click',function(){
-                    new ExternalForm({id: refAutocomplete.config.id});
+            $('<div>', { class:'icons' }).append(
+                $('<i>', { class: 'fas fa-plus' }).on('click', function(){
+                    new ExternalForm({ id: refAutocomplete.config.id });
                 }),
                 $('<i>', { class: 'fas fa-warning' })
             )
@@ -340,13 +433,13 @@ class Autocomplete {
             if( this.config.url == undefined ) {
                 return;
             }    
-            $.ajax({
+            $.ajax( {
                 url: this.config.url,
                 async: false,
                 success: function(data){
                     refAutoComplete.data = data;
                 }
-            })
+            } )
         }
         for (var idcData = 0; idcData < this.data.length; idcData++) {
             var res = this.data[idcData];
@@ -368,10 +461,9 @@ class Autocomplete {
         //this.showOptions();
     }
     vinculeKeys() {
-        this.analyseKeys = function(event){
+        this.analyseKeys = function(event) {
             var selectedItem = this.options.find('.selected');
             var ret = false;
-            g = this.options;
             var next = undefined;
             if(event.keyCode == 40) {
                 if(selectedItem.length == 0) {
@@ -395,7 +487,6 @@ class Autocomplete {
                 }
                 ret = true;
             }
-            //console.log(next);
             if(next !== undefined) {
                 selectedItem.removeClass('selected')
                 next.addClass('selected');
@@ -410,7 +501,33 @@ class Autocomplete {
         this.fnAdd(id, value);
         this.fnAfterAdd(id, value);
     }
-}   
+}
+class Icon {
+    constructor(config){
+        this.area = config.area;
+        //this.input = input;
+        this.add(config.icon);
+    }
+    findSpace(){
+        var icones = this.area.find('.icons');
+        g = this.area;
+        if(icones.length > 0 ) {
+            return icones;
+        }
+        this.area.find('input').appendAfter(
+            $('<div>', { class: 'icons'} )
+        );
+    }
+    add(icone) {
+        if(typeof(icone) == 'object') {
+            this.findSpace().append(icone);
+            return;
+        }
+        this.findSpace().append(
+            $('<i>',{ class:'fas ' + icone })
+        );
+    }
+} 
 class WarningField {
     constructor(){
         
