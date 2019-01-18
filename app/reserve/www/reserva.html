@@ -32,32 +32,27 @@
                     <input type="text" class="form-control" placeholder="Hora Entrega">
                     componente de máscara
                 </div>
-                <div>Pago:</div>
-                <div>Pago:</div>
-                <div>
-                    Produtos
-                        *fazer uma carga inicial e alterar essa carga caso sofram alterações
-                        *clientes também
-                    Adicionar e remover * assim como nos contatos
-                    Colocar campo de valor acordado por unidade, para que nos assados possa servir como valor de peso
-                    <div class="form-group">
+                <div class="form-row" id="produtos">
+                    <div class="form-group col-8">
                         <label for="products[name][]">Produto</label>
-                        <input type="text" class="form-control" id="produto" name="produto" placeholder="Produto">
-                        componente de máscara
+                        <input type="text" class="form-control"  name="products[name][]" placeholder="Produto">
                     </div>
-                    <div class="form-group">
-                        <label for="products[quantity][]">Quantidade</label>
-                        <input type="text" class="form-control" placeholder="Quantidade">
-                        componente de máscara
+                    <div class="form-group col-4">
+                        <label for="products[qty][]">Quantidade</label>
+                        <input type="text" class="form-control"  name="products[qty][]" placeholder="Quantidade">
                     </div>
-                    <div class="form-group">
-                        <label for="products[value][]">Valor</label>
-                        <input type="text" class="form-control" placeholder="Valor">
-                        componente de máscara
-                    </div>
-                    <div class="form-group">
-                        Total:
-                    </div>
+                </div>
+                <div>Pago:</div>
+                <div class="form-group">
+                    <label for="products[value][]">Valor</label>
+                    <input type="text" class="form-control" placeholder="Valor">
+                    componente de máscara
+                </div>
+                    //ao selecionar tooltip com o total de cada item'
+                    //tota final, sinalizar quando o valor de algum produto não foi definido
+                    //colocar quantidade esperada e a quantidade final
+                <div class="form-group">
+                    Total:
                 </div>
                 <div>Total Final:</div>
                 <div class="form-group">

@@ -330,29 +330,32 @@ class MultiFieldV2 {
             return false;
         }
         var multifieldRef = this;
-        var inputs = this.getInputs();
+        //var inputs = this.getInputs();
         var dataItem = $('<div>', {class:'data-item'});
+        var clone = multifieldRef.config.area.clone();
         this.dataContainer.append(
             dataItem.append(
-                multifieldRef.config.area.clone()
+                clone
             )
         );
-        dataItem.find('input').on('change blur', function(){
-            console.log('chenge: campo vazio, remove, têm de havaliar todos os inputs');
-            for (var idcInputs = 0; idcInputs < inputs.length; idcInputs++) {
-                var input = inputs[idcInputs];
-                if($(input).val() != "") {
-                    return;    
-                }    
-            }
-            dataItem.remove();
-        })
-        .on('keyup',function() {
-            for (var idcInputs = 0; idcInputs < inputs.length; idcInputs++) {
-                var input = inputs[idcInputs];
-                console.log('continua a validação original ???');
-            }
-        });
+        clone.find('input').attr('readonly', true);
+        clone.find('.icons').html('');
+        console.log(clone.find('input'))
+        // .on('change blur', function(){
+        //     for (var idcInputs = 0; idcInputs < inputs.length; idcInputs++) {
+        //         var input = inputs[idcInputs];
+        //         if($(input).val() != "") {
+        //             return;    
+        //         }    
+        //     }
+        //     dataItem.remove();
+        // })
+        // .on('keyup',function() {
+        //     for (var idcInputs = 0; idcInputs < inputs.length; idcInputs++) {
+        //         var input = inputs[idcInputs];
+        //         console.log('continua a validação original ???');
+        //     }
+        // });
         new Icon({ area : dataItem
                     , icon: $('<i>',{ class:'fas fa-trash' })
                             .on('click',function() {
@@ -362,7 +365,6 @@ class MultiFieldV2 {
         this.getInputs().val('');
     }
     valid(field) {
-        console.log('valida os multicampos');
         return true;
         // this.warningValidation.remove();
         // if(this.config.field.val() == this.config.defaultValue || this.config.field.val() == '') {
