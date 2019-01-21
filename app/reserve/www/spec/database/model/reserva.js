@@ -15,6 +15,9 @@
         status
     }
 */
+Script.include(['spec/database/conector.js',
+                'spec/database/stitch.js',
+                'spec/database/model/generic.js'])
 class Status extends genericModel{
     constructor(){
         super();

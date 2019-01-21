@@ -1,11 +1,6 @@
-function salvar(data) {
-    // var produtoModel = new Produto();
-    console.log(data);
-    //produtoModel.deleteOne(data);
-}
-
 $(window).ready(function(){
-    $('#cliente .multi-field').each(function(idc,field){
-            var multi = new MultiField({field : $(field), mask: 'celphone', defaultValue: '(54) '});
-    })
+    var inputTelefone = $('#cliente [name=\'contacts[]\'');
+    var telefone = new MultiField({input : inputTelefone, default: '(54) '});
+    new Mask(inputTelefone, 'celphone');
+    new Form({ form: $("#cliente"), model: 'cliente'});
 })

@@ -3,10 +3,12 @@
     {
         stock,
         name,
-        value,
-        price
+        price,
     }
 */
+Script.include(['spec/database/stitch.js',
+                'spec/database/conector.js',
+                'spec/database/model/generic.js'])
 class Produto extends genericModel{
     constructor() {
         super();
