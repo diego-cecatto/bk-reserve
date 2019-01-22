@@ -6,10 +6,10 @@ class DataTable {
             data : null
             ,
             destiny: document.getElementById("data-table-area")
+            ,
+            model: ''
         }
-        for(var conf in config) {
-            this.config[conf] = config[conf] ;
-        }
+        new Configurador(config, this.config);
         this.getFields();
         this.build();
     }
@@ -37,8 +37,21 @@ class DataTable {
     build() {
         this.table = $("<table>",{class:"table table-striped"});
         this.buildHeader();
-        this.buildRow();
-        this.config.destiny.html(this.table);
+        var dataTbleRef = this;
+        this.getData.done(function(){
+            dataTbleRef.buildRow();
+            dataTbleRef.config.destiny.html(this.table);
+        })
+    }
+    getData(){
+        var model = new models[this.config.model]();
+        var def = $.Defered();
+        var dtaTbleRef = this;
+        model.find(null, function(data){
+            dtaTbleRef.data = data;
+            def.resolve();
+        })
+        return def.promisse();
     }
     buildHeader() {
         var header = $("<thead>");
@@ -67,4 +80,4 @@ class DataTable {
         this.table.append(tbody);
     }
 }
-datatable = new DataTable();
+//datatable = new DataTable();

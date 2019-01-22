@@ -101,6 +101,8 @@ class Page{
                                 'spec/lib/form/form.js',
                                 'spec/lib/date-picker/js/bootstrap-datepicker.js',
                                 'spec/database/model/status.js',
+                                'spec/database/model/clients.js',
+                                'spec/database/model/produto.js',
                                 'spec/lib/form/autocomplete.js',
                                 'spec/lib/form/mask.js',
                                 'spec/lib/form/icon.js',

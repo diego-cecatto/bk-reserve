@@ -2,9 +2,10 @@ class Autocomplete {
     constructor(config) {
         this.config = {
             field: null,
-            alias:''
+            model: '',
+            name: 'name'
         };
-        this.data = [{id:'1' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'}];
+        //this.data = [{id:'1' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'}];
         for(let conf in this.config) {
             if(config[conf] == undefined) {
                 continue;
@@ -15,9 +16,11 @@ class Autocomplete {
             console.log('não foi possível encontrar o campo');
             return;
         }
+
         this.config.id = this.config.field.attr('name').toString()
                                                         .replace(/\[/g, '')
                                                         .replace(/]|'/g, '');
+        this.config.model = this.config.id;
         this.build();
     }
     build() {
@@ -30,7 +33,7 @@ class Autocomplete {
             this.options,
             $('<div>', { class:'icons' }).append(
                 $('<i>', { class: 'fas fa-plus' }).on('click', function(){
-                    new ExternalForm({ id: refAutocomplete.config.alias });
+                    new ExternalForm({ id: refAutocomplete.config.model });
                 }),
                 $('<i>', { class: 'fas fa-warning' })
             )
@@ -47,6 +50,23 @@ class Autocomplete {
             refAutocomplete.closeOptions()
         })
         .attr('autocomplete','off')
+        this.getData();
+    }
+    getData() {
+        if(this.gettingData) {
+            return;
+        }
+        if( this.config.model == undefined || this.config.model == '' ) {
+            console.log('Sem nenhum model definido');
+            return;
+        }    
+        this.gettingData = true;
+        var refAutoComplete = this;
+        var model = new models[this.config.model]();
+        model.find(null, function(data){
+            refAutoComplete.data = data;
+            //refAutoComplete.showOptions(query);
+        });
     }
     search(query) {
         this.options.html('');
@@ -54,39 +74,31 @@ class Autocomplete {
         if(query.length == 0) {
             return;
         }
-        var refAutoComplete = this;
         if(this.data == null ) {
-            //pega com base no id
-            //instancia a classe de referência dos models
-            if( this.config.url == undefined ) {
-                return;
-            }    
-            $.ajax( {
-                url: this.config.url,
-                async: false,
-                success: function(data){
-                    refAutoComplete.data = data;
-                }
-            } )
+            //this.getData(query);
+            return;
         }
+        this.showOptions(query);
+        //this.showOptions();
+    }
+    showOptions(query){
         for (var idcData = 0; idcData < this.data.length; idcData++) {
             var res = this.data[idcData];
-            var idcQuery = res.value.indexOf(query);
-            if (idcQuery == -1) {
+            var ocurrences = res[this.config.name].match(new RegExp(query,'g'));
+            if (ocurrences == null) {
                 continue;
             }
             this.options.append(
                 $('<div>').append(
-                    res.value.replace(new RegExp(query,'g'),'<span class=\'highlight\'>' + query + '</span>')
+                    res[this.config.name].replace(new RegExp(query,'g'),'<span class=\'highlight\'>' + query + '</span>')
                 ).on('click' , function() {
-                    this.add(res.id, res.value);
+                    this.add(res._id.toString(), res[this.config.name]);
                 })
             );
         }
         if(this.options.length > 0 ) {
             this.vinculeKeys();
         }
-        //this.showOptions();
     }
     vinculeKeys() {
         this.analyseKeys = function(event) {
@@ -134,7 +146,9 @@ class Autocomplete {
         this.analyseKeys = undefined;
     }
     add(id, value) {
-        this.fnAdd(id, value);
-        this.fnAfterAdd(id, value);
+        console.log(id,value);
+        closeOptions();
+        // this.fnAdd(id, value);
+        // this.fnAfterAdd(id, value);
     }
 }
