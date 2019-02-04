@@ -20,7 +20,10 @@ class Autocomplete {
         this.config.id = this.config.field.attr('name').toString()
                                                         .replace(/\[/g, '')
                                                         .replace(/]|'/g, '');
-        this.config.model = this.config.id;
+        console.log(this.config.model)
+        if (this.config.model == undefined || this.config.model =='') {
+            this.config.model = this.config.id;
+        }
         this.build();
     }
     build() {
@@ -28,8 +31,10 @@ class Autocomplete {
         autocompleteArea.insertAfter(this.config.field);
         this.options = $("<div>", { id: 'options-' + this.config.id, class:'autocomplete-options' });
         var refAutocomplete = this;
+        this.acomplete = $('<input>', { name: 'name-'+this.config.id })
         autocompleteArea.append(
-            this.config.field,
+            this.config.field.attr('type','hidden'),
+            this.acomplete.addClass(this.config.field.attr('class')),
             this.options,
             $('<div>', { class:'icons' }).append(
                 $('<i>', { class: 'fas fa-plus' }).on('click', function(){
@@ -38,7 +43,7 @@ class Autocomplete {
                 $('<i>', { class: 'fas fa-warning' })
             )
         );
-        this.config.field.on('keyup', function(event){
+        this.acomplete.on('keyup', function(event){
             if(refAutocomplete.analyseKeys != undefined) {
                 if(refAutocomplete.analyseKeys(event)) {
                     return;
@@ -46,9 +51,9 @@ class Autocomplete {
             }
             refAutocomplete.search($(this).val());
         })
-        .on('change', function() {
-            refAutocomplete.closeOptions()
-        })
+        // .on('change', function() {
+        //     refAutocomplete.closeOptions()
+        // })
         .attr('autocomplete','off')
         this.getData();
     }
@@ -82,18 +87,21 @@ class Autocomplete {
         //this.showOptions();
     }
     showOptions(query){
+        var classe = this;
         for (var idcData = 0; idcData < this.data.length; idcData++) {
             var res = this.data[idcData];
             var ocurrences = res[this.config.name].match(new RegExp(query,'g'));
             if (ocurrences == null) {
                 continue;
             }
+            var currOption = $('<div>', {'data-id':res._id.toString(),  'data-name':res[classe.config.name]}).append(
+                                    res[this.config.name].replace(new RegExp(query,'g'), '<span class=\'highlight\'>' + query + '</span>')
+                                ).on('click', function() {
+                                    // console.log(res);
+                                    classe.add($(this).attr('data-id'),$(this).attr('data-name'));
+                                })
             this.options.append(
-                $('<div>').append(
-                    res[this.config.name].replace(new RegExp(query,'g'),'<span class=\'highlight\'>' + query + '</span>')
-                ).on('click' , function() {
-                    this.add(res._id.toString(), res[this.config.name]);
-                })
+                currOption
             );
         }
         if(this.options.length > 0 ) {
@@ -106,8 +114,10 @@ class Autocomplete {
             var ret = false;
             var next = undefined;
             if(event.keyCode == 13) {
-                event.preventDefault();
-                selectedItem.click();
+                console.log();
+                //event.preventDefault();
+                this.options.find('.selected').click();    
+                return true;
             }
             if(event.keyCode == 40) {
                 if(selectedItem.length == 0) {
@@ -139,16 +149,18 @@ class Autocomplete {
         }
     }
     closeOptions(){
-        this.options.html('');
         this.desvinculeKeys();
+        this.options.html('');
     }
     desvinculeKeys () {
         this.analyseKeys = undefined;
     }
     add(id, value) {
         console.log(id,value);
-        closeOptions();
+        this.config.field.val(id);
+        this.acomplete.val(value);
         // this.fnAdd(id, value);
         // this.fnAfterAdd(id, value);
+        this.closeOptions();
     }
 }

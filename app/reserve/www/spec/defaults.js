@@ -129,7 +129,7 @@ class Page{
             defaults = defaults.concat(extras[page]);
         }
         for(var idc = 0 ; idc < defaults.length; idc ++) {
-        CSS.include(defaults[idc]);
+            CSS.include(defaults[idc]);
         }
     }
     parameter(parameterName) {
