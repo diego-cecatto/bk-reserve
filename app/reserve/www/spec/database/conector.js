@@ -14,9 +14,9 @@ constructor() {
     this.db = null;
     this.config = {
         APIKEY :'',
-        email: 'diego.cecatto@hotmail.com',
-        password: 'Forever_!1',
-        APIKEY :'fMd8fhxcFqIZV6664DpI6gEKoDGphExOWAXXWObrD5DNhbJLgwQq08cOg0lXGTY6'
+        email: 'EMAIL',
+        password: 'PASS',
+        APIKEY :'CREATE A API KEY LINK'
     }
     const dbConector = this;
     this.client = Stitch.initializeDefaultAppClient('reserve-rsfqy');
