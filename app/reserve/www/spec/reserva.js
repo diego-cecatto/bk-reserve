@@ -1,15 +1,15 @@
 $(window).ready(function(){
-    cliente = new Autocomplete({ 
-                        field: $("#reserva #cliente"),
-                        url:'' , 
-                        formInclude: ''
+    clientAC = new Autocomplete({ 
+                        field: $("#reserva #client"), 
+                        alias:'cliente',
+                        model:'cliente'
                     });
     new MultiField({ area: $("#reserva #produtos") })
-    produtos = new Autocomplete({ field: $("#reserva [name='products[id][]']"), 
-                                        alias:'produto' ,
-                                        formInclude: '',
-                                        model:  'produto'
-                                    });  
+    productsAC = new Autocomplete({ 
+                                    field: $("#reserva [name='productsReserves[id][]']"), 
+                                    alias:'produto' ,
+                                    model: 'produto'
+                                });  
     new Select({input: $("#reserva [name='status']")});
     new Mask($('#reserva [name=hour]'),'hour');
     $('#reserva .datepicker').datepicker();

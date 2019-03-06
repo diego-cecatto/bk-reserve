@@ -6,48 +6,51 @@ class Autocomplete {
             name: 'name'
         };
         //this.data = [{id:'1' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'},{id:'2' , value:'teste1'}];
-        for(let conf in this.config) {
-            if(config[conf] == undefined) {
+        for (let conf in this.config) {
+            if (config[conf] == undefined) {
                 continue;
             }
             this.config[conf] = config[conf];
         }
-        if(this.config.field == undefined) {
+        if (this.config.field == undefined || this.config.field.length == 0) {
             console.log('não foi possível encontrar o campo');
             return;
         }
-
         this.config.id = this.config.field.attr('name').toString()
                                                         .replace(/\[/g, '')
                                                         .replace(/]|'/g, '');
-        console.log(this.config.model)
         if (this.config.model == undefined || this.config.model =='') {
             this.config.model = this.config.id;
         }
         this.build();
     }
     build() {
+        var classe = this;
         var autocompleteArea = $('<div>', { class: 'autocomplete' });
         autocompleteArea.insertAfter(this.config.field);
         this.options = $("<div>", { id: 'options-' + this.config.id, class:'autocomplete-options' });
         var refAutocomplete = this;
-        this.acomplete = $('<input>', { name: 'name-'+this.config.id })
+        //{ name: 'name-' + this.config.id }
+        this.acomplete = $('<input>')
         autocompleteArea.append(
-            this.config.field.attr('type','hidden'),
+            this.config.field.attr('type', 'hidden'),
             this.acomplete.addClass(this.config.field.attr('class')),
             this.options,
             $('<div>', { class:'icons' }).append(
-                $('<i>', { class: 'fas fa-plus' }).on('click', function(){
-                    new ExternalForm({ id: refAutocomplete.config.model });
+                $('<i>', { class: 'fas fa-plus' }).on('click', function() {
+                    new ExternalForm({ 
+                                        id: refAutocomplete.config.model,
+                                        afterSave: function(data) {
+                                            classe.acomplete.val(data.name);
+                                            classe.config.field.val(data.id.toString());
+                                        }});
                 }),
                 $('<i>', { class: 'fas fa-warning' })
             )
         );
-        this.acomplete.on('keyup', function(event){
-            if(refAutocomplete.analyseKeys != undefined) {
-                if(refAutocomplete.analyseKeys(event)) {
-                    return;
-                }
+        this.acomplete.on('keyup', function(event) {
+            if (refAutocomplete.analyseKeys != undefined && refAutocomplete.analyseKeys(event)) {
+                return;
             }
             refAutocomplete.search($(this).val());
         })
@@ -58,10 +61,10 @@ class Autocomplete {
         this.getData();
     }
     getData() {
-        if(this.gettingData) {
+        if (this.gettingData) {
             return;
         }
-        if( this.config.model == undefined || this.config.model == '' ) {
+        if ( this.config.model == undefined || this.config.model == '' ) {
             console.log('Sem nenhum model definido');
             return;
         }    
@@ -76,10 +79,10 @@ class Autocomplete {
     search(query) {
         this.options.html('');
         this.desvinculeKeys();
-        if(query.length == 0) {
+        if (query.length == 0) {
             return;
         }
-        if(this.data == null ) {
+        if (this.data == null ) {
             //this.getData(query);
             return;
         }
@@ -94,7 +97,7 @@ class Autocomplete {
             if (ocurrences == null) {
                 continue;
             }
-            var currOption = $('<div>', {'data-id':res._id.toString(),  'data-name':res[classe.config.name]}).append(
+            var currOption = $('<div>', { 'data-id':res._id.toString(),  'data-name':res[classe.config.name] }).append(
                                     res[this.config.name].replace(new RegExp(query,'g'), '<span class=\'highlight\'>' + query + '</span>')
                                 ).on('click', function() {
                                     // console.log(res);
@@ -104,7 +107,7 @@ class Autocomplete {
                 currOption
             );
         }
-        if(this.options.length > 0 ) {
+        if (this.options.length > 0 ) {
             this.vinculeKeys();
         }
     }
@@ -113,42 +116,42 @@ class Autocomplete {
             var selectedItem = this.options.find('.selected');
             var ret = false;
             var next = undefined;
-            if(event.keyCode == 13) {
+            if (event.keyCode == 13) {
                 console.log();
                 //event.preventDefault();
                 this.options.find('.selected').click();    
                 return true;
             }
-            if(event.keyCode == 40) {
-                if(selectedItem.length == 0) {
+            if (event.keyCode == 40) {
+                if (selectedItem.length == 0) {
                     next = this.options.children().first();
-                } else{
+                } else {
                     next = $(selectedItem).next();
-                    if(next.length == 0) {
+                    if (next.length == 0) {
                         next = this.options.children().first();;
                     }
                 }
                 ret = true;
             }
-            if(event.keyCode == 38) {
-                if(selectedItem.length == 0) {
+            if (event.keyCode == 38) {
+                if (selectedItem.length == 0) {
                     next = this.options.children().last();
-                } else{
+                } else {
                     next = $(selectedItem).prev();
-                    if(next.length == 0) {
+                    if (next.length == 0) {
                         next = this.options.children().last();
                     }
                 }
                 ret = true;
             }
-            if(next !== undefined) {
+            if (next !== undefined) {
                 selectedItem.removeClass('selected')
                 next.addClass('selected');
             }
             return ret;
         }
     }
-    closeOptions(){
+    closeOptions() {
         this.desvinculeKeys();
         this.options.html('');
     }

@@ -1,6 +1,9 @@
-$(window).ready(function(){
-    var inputTelefone = $('#cliente [name=\'contacts[]\'');
+$(window).ready(function() {
+    var inputTelefone = $('form#cliente [name=\'contacts[]\'');
     var telefone = new MultiField({input : inputTelefone, default: '(54) '});
     new Mask(inputTelefone, 'celphone');
-    new Form({ form: $("#cliente"), model: 'cliente'});
+    cliente = new Form({ 
+                        form: $("form#cliente"), 
+                        model: 'cliente'
+                        });
 })

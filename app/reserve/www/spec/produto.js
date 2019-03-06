@@ -3,8 +3,13 @@
 //     model.salvar($('#produto').serialize());
 // }
 $(window).ready(function(){
-    new Mask($('#produto [name=price]'), 'money');
-    new Form({ form: $("#produto"), model: 'produto', 
-    casts: {stock : 'integer', price: 'float'}
-});
+    new Mask($('form#produto [name=price]'), 'money');
+    produto = new Form({ 
+                        form: $("form#produto"), 
+                        model: 'produto', 
+                        casts: { 
+                                stock : 'integer', 
+                                price: 'float' 
+                        }
+                    });
 })

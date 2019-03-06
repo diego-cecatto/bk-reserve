@@ -38,8 +38,14 @@
                             //pode esconder os botões e executa a ação depois através do trigger destes botões
                             modal = $(modal);
                             $('body').append(modal)
-                            page.bundleDependence(externalForm.config.id)
-                            modal.modal();
+                            page.bundleDependence(externalForm.config.id);
+                            setTimeout(function() {
+                                window[externalForm.config.id].config.afterSave = function(data) {
+                                                                                        externalForm.config.afterSave(data);
+                                                                                        $('#' + externalForm.config.prefixId + externalForm.config.id).modal('hide');
+                                }
+                                modal.modal();
+                            }, 10);
                         }
                     })
                 }

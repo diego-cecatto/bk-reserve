@@ -13,7 +13,7 @@
             <form id="reserva">
                 <div class="form-group">
                     <label for="client">Cliente</label>
-                    <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Cliente">
+                    <input type="text" class="form-control" id="client" name="client" placeholder="Cliente">
                 </div>
                 <div class="form-group">
                     <label for="contato">Status</label>
@@ -21,22 +21,22 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-6">
-                        <label for="dateDelivery">Data para Entrega</label>
+                        <label for="deliveryDate">Data para Entrega</label>
                         <input type="text" class="form-control datepicker" name="deliveryDate" placeholder="Data Entrega">
                     </div>
                     <div class="form-group col-6">
-                        <label for="dateDelivery">Hora para Entrega</label>
+                        <label for="hourDelivery">Hora para Entrega</label>
                         <input type="text" class="form-control" name="hourDelivery" placeholder="Hora Entrega">
                     </div>
                 </div>
                 <div class="form-row" id="produtos">
                     <div class="form-group col-8">
                         <label for="products[id][]">Produto</label>
-                        <input type="text" class="form-control"  name="products[id][]" placeholder="Produto">
+                        <input type="text" class="form-control"  name="productsReserves[id][]" placeholder="Produto">
                     </div>
                     <div class="form-group col-4">
                         <label for="products[qty][]">Quantidade</label>
-                        <input type="text" class="form-control"  name="products[qty][]" placeholder="Quantidade">
+                        <input type="text" class="form-control"  name="productsReserves[qty][]" placeholder="Quantidade">
                     </div>
                 </div>
                 <div>Pago:</div>

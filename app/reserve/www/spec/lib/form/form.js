@@ -30,34 +30,78 @@ class Form {
         var form = this.config.form;
         var obj = {};
         var elements = form.find( "input, select, textarea" );
-        for( var i = 0; i < elements.length; ++i ) {
+        for ( var i = 0; i < elements.length; ++i ) {
             var element = elements[i];
             var name = element.name;
+            if (!name) {
+                continue;
+            }
             var value = element.value;
             var casts = this.config.casts;
-            if(casts !=undefined && casts[name] != undefined) {
-                if(casts[name] == 'float') {
+            if (casts !=undefined && casts[name] != undefined) {
+                if (casts[name] == 'float') {
                     value = parseFloat(value.replace(',','.'));
-                } else if(casts[name] == 'integer') {
+                } else if (casts[name] == 'integer') {
                     value = parseInt(value);
                 }
             }
-            if( name ) {
-                obj[ name ] = value;
+            section = name;
+            var startBracket = name.indexOf('[');
+            var last = obj;
+            if (startBracket != -1) {
+                var section = name.substring(0, startBracket)
+                if (obj[section] == undefined) {
+                    obj[section] = [];
+                }
+                var security = 0;
+                while (startBracket != -1 && name.match(/]|'/g).length && security < 100) {
+                    last = last[section];
+                    security++;
+                    startBracket+=1;
+                    var endBracket = name.indexOf(']');
+                    section = name.substr(startBracket, endBracket - startBracket )
+                    if (last[section] == undefined) {
+                        last[section] = [];
+                    }
+                    name = name.substring(endBracket + 1);
+                    startBracket = name.indexOf('[');
+                }
+            }
+            var isArray = Array.isArray(last[section]);
+            if (last[section] == undefined || (isArray && last[section].length == 0)) {
+                last[section] = value;
+            } else if (isArray){
+                last[section].push(value);
+            } else {
+                var old = last[section];
+                last[section] = [];
+                last[section].push(old);
+                last[section].push(value);
             }
         }
         return obj;
     }
     setActions() {
         var form = this.config.form;
+        if (form.legth == 0) {
+            console.error('form not found');
+        }
         var formRef = this;
-        form.on( "submit", function( e ) {
+        form.on("submit", function(e) {
             e.preventDefault();
             var json = formRef.toJSONString();
             console.log(json);
+            // return;
+            if (!formRef.config.model) {
+                console.error('Model not found, load this in page dependences');
+            }
             var model = new models[formRef.config.model]();
-            model.insertOne(json, function(){
-                formRef.config.form.find('#cancel').click();
+            model.insertOne(json, function(data) {
+                if (formRef.config.afterSave == undefined) {
+                    formRef.config.form.find('#cancel').click();
+                    return;
+                }
+                formRef.config.afterSave(data);
             });
         });
         form.find('#cancel').on( "click", function( e ) {

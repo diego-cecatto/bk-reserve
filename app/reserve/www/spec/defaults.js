@@ -24,6 +24,7 @@ var Script = {
         script.innerHTML = code;
         document.body.appendChild(script);
         this._loadedScripts.push(url);
+        console.log('loaded')
     }
 };
 var CSS = {
@@ -34,7 +35,6 @@ var CSS = {
                 return false;
             }
             xhttp = new XMLHttpRequest();
-            console.log(link);
             xhttp.open("GET", link, false);
             xhttp.send();
             var code = xhttp.responseText;
@@ -47,7 +47,7 @@ var CSS = {
             document.getElementsByTagName('head')[0].appendChild(style);
         }
 }
-class Page{
+class Page {
     constructor(){
         this.definePage();
         this.bundlesCSS(this.page);
@@ -68,20 +68,29 @@ class Page{
         //into links 
         //url select menu active
     }
-    bundleDependence(page){
-        this.bundlesCSS(page);
+    bundleDependence(page) {
         this.bundleJS(page);
+        this.bundlesCSS(page);
     }
     //load a default scripts into page
     //load a default css into page
-    bundleJS(page){
+    bundleJS(page) {
         var extras = [];
         var defaults = [
             'spec/lib/jquery-3.3.1.min.js',
             'cordova.js',
             'spec/lib/bootstrap/js/bootstrap.min.js'
         ];
-        extras["produtos"] = ['spec/lib/data-table.js'];
+        extras["clientes"] = [
+                                'spec/database/model/clients.js',
+                                'spec/lib/data-table.js',
+                                'spec/clientes.js',
+                             ];
+        extras["produtos"] = [
+                                'spec/database/model/produto.js',
+                                'spec/lib/data-table.js',
+                                'spec/produtos.js',
+                            ];
         extras["produto"] = [
                             'spec/lib/form/form.js',
                             'spec/lib/form/mask.js',
@@ -103,6 +112,7 @@ class Page{
                                 'spec/database/model/status.js',
                                 'spec/database/model/clients.js',
                                 'spec/database/model/produto.js',
+                                'spec/database/model/reserva.js',
                                 'spec/lib/form/autocomplete.js',
                                 'spec/lib/form/mask.js',
                                 'spec/lib/form/icon.js',
@@ -110,21 +120,30 @@ class Page{
                                 'spec/lib/form/select.js',
                                 'spec/reserva.js'
                             ];
-        if(extras[page] !== undefined) {
+        extras["reservas"] = [
+            'spec/database/model/reserva.js',
+            'spec/lib/data-table.js',
+            'spec/reservas.js',
+        ];
+        if (extras[page] !== undefined) {
             defaults = defaults.concat(extras[page]);
         }
         Script.include(defaults);
     }
-    bundlesCSS(page){
+    bundlesCSS(page) {
         var extras = [];
         extras['cliente'] = ['css/form.css'];
-        extras['reserva'] = ['css/form.css',
+        extras['reserva'] = [
+                            'css/form.css',
                             'spec/lib/date-picker/css/bootstrap-datepicker3.css',
-                            'spec/lib/date-picker/css/bootstrap-datepicker3.standalone.css'];
-        var defaults = ['spec/lib/bootstrap/css/bootstrap-reboot.min.css',
+                            'spec/lib/date-picker/css/bootstrap-datepicker3.standalone.css'
+                        ];
+        var defaults = [
+                        'spec/lib/bootstrap/css/bootstrap-reboot.min.css',
                         'spec/lib/bootstrap/css/bootstrap.min.css',
                         'spec/lib/bootstrap/css/bootstrap-grid.min.css',
-                        'spec/lib/font-awesome/css/all.css'];
+                        'spec/lib/font-awesome/css/all.css'
+                    ];
         if(extras[page] !== undefined) {
             defaults = defaults.concat(extras[page]);
         }
@@ -162,3 +181,20 @@ $(document).ready(function(){
 function direct(page) {
     window.location.href = page;
 }
+function camelize(text, separator) {
+    if(typeof(separator) == "undefined") {
+      separator = "-";
+    }
+    var words = text.split(separator);
+    var result = "";
+    for (var i = 0 ; i < words.length ; i++) {
+      var word = words[i];
+      var capitalizedWord = word;
+      if (i > 0) {
+        capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+      }
+      result += capitalizedWord;
+    }
+    return result;
+   
+  }
